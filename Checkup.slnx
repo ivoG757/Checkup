@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Checkup.App/Checkup.App.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="Checkup.Core/Checkup.Core.csproj" />
+  <Project Path="Checkup.Infrastructure/Checkup.Infrastructure.csproj" />
+</Solution>
