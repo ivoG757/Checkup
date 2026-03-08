@@ -7,6 +7,17 @@ namespace Checkup.App.ViewModels;
 
 public class BoardViewModel : INotifyPropertyChanged
 {
+    public List<SquareViewModel> Squares { get; } = new();
+    public BoardViewModel()
+    {
+        for (int row = 0; row < 8; row++)
+        {
+            for (int col = 0; col < 8; col++)
+            {
+                Squares.Add(new SquareViewModel(row, col));
+            }
+        }
+    }
     public Board Board { get; set; } = new Board();
 
     private Piece _selectedPiece = Piece.Pawn;
@@ -32,6 +43,5 @@ public class BoardViewModel : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged(string name) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
