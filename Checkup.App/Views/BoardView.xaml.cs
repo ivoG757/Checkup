@@ -30,10 +30,10 @@ public partial class BoardView : ContentView
             {
                 var square = new Label
                 {
-                    BackgroundColor = (row + col) % 2 == 0 ? Colors.Beige : Colors.Brown,
+                    BackgroundColor = (row + col) % 2 == 0 ? Colors.DarkGray : Colors.Black,
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
-                    FontSize = 32
+                    FontSize = 50
                 };
 
                 int r = row;
@@ -80,12 +80,6 @@ public partial class BoardView : ContentView
             (Piece.King, ChessColor.Black) => "♚",
             _ => ""
         };
-
-        // Show black pieces differently
-        if (color == ChessColor.Black)
-        {
-            symbol = symbol.ToLower(); // optional: lowercase = black
-        }
 
         square.Text = symbol;
     }
