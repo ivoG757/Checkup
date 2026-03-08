@@ -37,6 +37,7 @@ public class BoardViewModel : INotifyPropertyChanged
 
     public void PlacePiece(int x, int y)
     {
+        Console.WriteLine($"Clicked {x},{y}");
         Board.Squares[x, y].Piece = SelectedPiece;
         Board.Squares[x, y].Color = SelectedColor;
         OnPropertyChanged(nameof(Board));

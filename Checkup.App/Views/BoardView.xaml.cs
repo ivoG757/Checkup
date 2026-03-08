@@ -1,5 +1,6 @@
-using Checkup.App.ViewModels;
-
+﻿using Checkup.App.ViewModels;
+using Checkup.Core.Models.Enums;
+using ChessColor = Checkup.Core.Models.Enums.Color;
 namespace Checkup.App.Views;
 
 public partial class BoardView : ContentView
@@ -27,22 +28,65 @@ public partial class BoardView : ContentView
         {
             for (int col = 0; col < 8; col++)
             {
-                var square = new BoxView();
+                var square = new Label
+                {
+                    BackgroundColor = (row + col) % 2 == 0 ? Colors.Beige : Colors.Brown,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    FontSize = 32
+                };
 
-                if ((row + col) % 2 == 0)
+                int r = row;
+                int c = col;
+
+                var tap = new TapGestureRecognizer();
+                tap.Tapped += (s, e) =>
                 {
-                    square.Color = Colors.Beige;
-                }
-                else
-                {
-                    square.Color = Colors.Brown;
-                }
+                    _viewModel.PlacePiece(r, c);
+                    UpdateSquare(square, r, c);
+                };
+                square.GestureRecognizers.Add(tap);
 
                 Grid.SetRow(square, row);
                 Grid.SetColumn(square, col);
 
                 BoardGrid.Children.Add(square);
+
+                // Initialize the text for empty squares
+                UpdateSquare(square, row, col);
             }
         }
+    }
+    private void UpdateSquare(Label square, int row, int col)
+    {
+        var piece = _viewModel.Board.Squares[row, col].Piece;
+        var color = _viewModel.Board.Squares[row, col].Color;
+        square.FontFamily = "Segoe UI Symbol";
+
+        // Map Piece enum to chess symbols
+        string symbol = (piece, color) switch
+        {
+            (Piece.Pawn, ChessColor.White) => "♙",
+            (Piece.Knight, ChessColor.White) => "♘",
+            (Piece.Bishop, ChessColor.White) => "♗",
+            (Piece.Rook, ChessColor.White) => "♖",
+            (Piece.Queen, ChessColor.White) => "♕",
+            (Piece.King, ChessColor.White) => "♔",
+            (Piece.Pawn, ChessColor.Black) => "♟",
+            (Piece.Knight, ChessColor.Black) => "♞",
+            (Piece.Bishop, ChessColor.Black) => "♝",
+            (Piece.Rook, ChessColor.Black) => "♜",
+            (Piece.Queen, ChessColor.Black) => "♛",
+            (Piece.King, ChessColor.Black) => "♚",
+            _ => ""
+        };
+
+        // Show black pieces differently
+        if (color == ChessColor.Black)
+        {
+            symbol = symbol.ToLower(); // optional: lowercase = black
+        }
+
+        square.Text = symbol;
     }
 }
