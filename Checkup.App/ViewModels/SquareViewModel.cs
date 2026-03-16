@@ -1,6 +1,7 @@
-﻿using Checkup.Core.Models.Enums;
+﻿
+using Checkup.Core.Models.Interfaces;
 using System.ComponentModel;
-using ChessColor = Checkup.Core.Models.Enums.Color;
+
 
 namespace Checkup.App.ViewModels;
 
@@ -9,26 +10,16 @@ public class SquareViewModel : INotifyPropertyChanged
     public int Row { get; }
     public int Column { get; }
 
-    private Piece _piece;
-    private ChessColor _color;
+    private IPiece _piece;
+   
 
-    public Piece Piece
+    public IPiece Piece
     {
         get => _piece;
         set
         {
             _piece = value;
             OnPropertyChanged(nameof(Piece));
-        }
-    }
-
-    public ChessColor Color
-    {
-        get => _color;
-        set
-        {
-            _color = value;
-            OnPropertyChanged(nameof(Color));
         }
     }
 

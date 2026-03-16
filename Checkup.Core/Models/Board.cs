@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Checkup.Core.Models.Enums;
 using System.Text;
+using Checkup.Core.Models.Interfaces;
 
 namespace Checkup.Core.Models
 {
-
-    public class Square
-    {
-        public Piece Piece { get; set; } = Piece.None;
-        public Color? Color { get; set; } = null;
-    }
-
     public class Board
     {
-        public Square[,] Squares { get; set; } = new Square[8, 8];
+        public IPiece[,] Squares { get; set; } = new IPiece[8, 8];
 
         public Board()
         {
@@ -22,7 +15,7 @@ namespace Checkup.Core.Models
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    Squares[x, y] = new Square();
+                    Squares[x, y] = null;
                 }
             }
         }

@@ -1,6 +1,8 @@
 ﻿using Checkup.App.ViewModels;
-using Checkup.Core.Models.Enums;
-using ChessColor = Checkup.Core.Models.Enums.Color;
+
+using Checkup.Core.Models.Interfaces;
+using Checkup.Core.Services;
+using Checkup.Infrastructure.ChessEngine;
 namespace Checkup.App.Views;
 
 public partial class BoardView : ContentView
@@ -11,7 +13,7 @@ public partial class BoardView : ContentView
     {
         InitializeComponent();
 
-        _viewModel = new BoardViewModel();
+        _viewModel = new BoardViewModel(new ChessEngineService());
 
         BuildGrid();
     }
@@ -42,8 +44,10 @@ public partial class BoardView : ContentView
                 var tap = new TapGestureRecognizer();
                 tap.Tapped += (s, e) =>
                 {
-                    _viewModel.PlacePiece(r, c);
-                    UpdateSquare(square, r, c);
+                    
+                    _viewModel.ClickedSquare(r, c);
+                    
+                    UpdateSquare(square, r, c); 
                 };
                 square.GestureRecognizers.Add(tap);
 
@@ -59,26 +63,14 @@ public partial class BoardView : ContentView
     }
     private void UpdateSquare(Label square, int row, int col)
     {
-        var piece = _viewModel.Board.Squares[row, col].Piece;
-        var color = _viewModel.Board.Squares[row, col].Color;
+        var piece = _viewModel.Board.Squares[row, col];
         square.FontFamily = "Segoe UI Symbol";
 
-        // Map Piece enum to chess symbols
-        string symbol = (piece, color) switch
+        var symbol = piece switch
         {
-            (Piece.Pawn, ChessColor.White) => "♙",
-            (Piece.Knight, ChessColor.White) => "♘",
-            (Piece.Bishop, ChessColor.White) => "♗",
-            (Piece.Rook, ChessColor.White) => "♖",
-            (Piece.Queen, ChessColor.White) => "♕",
-            (Piece.King, ChessColor.White) => "♔",
-            (Piece.Pawn, ChessColor.Black) => "♟",
-            (Piece.Knight, ChessColor.Black) => "♞",
-            (Piece.Bishop, ChessColor.Black) => "♝",
-            (Piece.Rook, ChessColor.Black) => "♜",
-            (Piece.Queen, ChessColor.Black) => "♛",
-            (Piece.King, ChessColor.Black) => "♚",
-            _ => ""
+            IPiece p when p.IsBlack => p.Symbol.ToString(),
+            IPiece p => p.Symbol.ToString(),
+            _ => string.Empty
         };
 
         square.Text = symbol;
