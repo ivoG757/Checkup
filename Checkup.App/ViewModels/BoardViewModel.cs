@@ -1,9 +1,12 @@
-﻿using Checkup.Core.Models;
+﻿using Android.Hardware.Lights;
+using Checkup.Core.Models;
 using Checkup.Core.Models.Interfaces;
 using Checkup.Core.Models.Pieces;
 using Checkup.Core.Services;
 using Checkup.Infrastructure.ChessEngine;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
+using static Android.Provider.DocumentsContract;
 
 namespace Checkup.App.ViewModels;
 
@@ -28,14 +31,33 @@ public class BoardViewModel : INotifyPropertyChanged
     public void SetPiecesOnBoard() // TODO: This should be moved to the ChessEngine and the ViewModel should interact with the ChessEngine to get the board state.
     {
         IPiece whitePawn = new Pawn { IsBlack = false };
-        PlacePiece(1, 2, whitePawn);
-        PlacePiece(2, 2, whitePawn);
-        //PlacePiece(3, 2, whitePawn);
-        //PlacePiece(4, 2, whitePawn);
-        //PlacePiece(5, 2, whitePawn);
-        //PlacePiece(6, 2, whitePawn);
-        //PlacePiece(7, 2, whitePawn);
-        //PlacePiece(8, 2, whitePawn);
+        // Black back rank
+        //PlacePiece(0, 0, new Rook { IsBlack = true });
+        //PlacePiece(0, 1, new Knight { IsBlack = true });
+        //PlacePiece(0, 2, new Bishop { IsBlack = true });
+        //PlacePiece(0, 3, new Queen { IsBlack = true });
+        //PlacePiece(0, 4, new King { IsBlack = true });
+        //PlacePiece(0, 5, new Bishop { IsBlack = true });
+        //PlacePiece(0, 6, new Knight { IsBlack = true });
+        //PlacePiece(0, 7, new Rook { IsBlack = true });
+
+        //// Black pawns
+        //for (int c = 0; c < 8; c++)
+        //    PlacePiece(1, c, new Pawn { IsBlack = true });
+
+        //// White pawns
+        //for (int c = 0; c < 8; c++)
+        //    PlacePiece(6, c, new Pawn { IsBlack = false });
+
+        //// White back rank
+        //PlacePiece(7, 0, new Rook { IsBlack = false });
+        //PlacePiece(7, 1, new Knight { IsBlack = false });
+        //PlacePiece(7, 2, new Bishop { IsBlack = false });
+        //PlacePiece(7, 3, new Queen { IsBlack = false });
+        //PlacePiece(7, 4, new King { IsBlack = false });
+        //PlacePiece(7, 5, new Bishop { IsBlack = false });
+        //PlacePiece(7, 6, new Knight { IsBlack = false });
+        //PlacePiece(7, 7, new Rook { IsBlack = false });
     }
     public Board Board { get; set; } = new Board(); // TODO: This should be moved to the ChessEngine and the ViewModel should interact with the ChessEngine to get the board state.
 
