@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Checkup.Core.Models.Interfaces
 {
     public interface IPiece
     {
-        public bool IsBlack { get; set; }
-        public char Symbol { get; }
-
-        //public void Move()
-        //{
-        //    // TODO: Implement move logic here
-        //}
+        bool IsBlack { get; set; }
+        char Symbol { get; }
+        List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY);
     }
 }
