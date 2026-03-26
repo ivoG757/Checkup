@@ -7,30 +7,32 @@ namespace Checkup.App.ViewModels;
 
 public class SquareViewModel : INotifyPropertyChanged
 {
+    public SquareViewModel(int row, int col)
+    {
+        Row = row;
+        Col = col;
+    }
     public int Row { get; }
-    public int Column { get; }
+    public int Col { get; }
 
-    private IPiece _piece;
-   
-
-    public IPiece Piece
+    private IPiece? _piece;
+    public IPiece? Piece
     {
         get => _piece;
         set
         {
-            _piece = value;
-            OnPropertyChanged(nameof(Piece));
+            if (_piece != value)
+            {
+                _piece = value;
+                OnPropertyChanged(nameof(Piece));
+                OnPropertyChanged(nameof(Symbol));
+            }
         }
     }
 
-    public SquareViewModel(int row, int column)
-    {
-        Row = row;
-        Column = column;
-    }
+    public string Symbol => Piece?.Symbol.ToString() ?? "";
 
     public event PropertyChangedEventHandler? PropertyChanged;
-
     protected void OnPropertyChanged(string name)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

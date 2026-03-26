@@ -1,9 +1,6 @@
 ﻿using Checkup.Core.Models;
 using Checkup.Core.Models.Interfaces;
 using Checkup.Core.Models.Pieces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Checkup.Core.Services
 {
@@ -13,15 +10,8 @@ namespace Checkup.Core.Services
         {
             SetPiecesOnBoard();
         }
-        public Board Board { get; set; } = new Board(); 
+        public Board Board { get; set; } = new Board();
 
-        private IPiece _selectedPiece { get; set; }
-
-        public IPiece SelectedPiece
-        {
-            get => _selectedPiece;
-            set { _selectedPiece = value; }
-        }
         public void SetPiecesOnBoard()
         {
             IPiece whitePawn = new Pawn { IsBlack = false };
@@ -52,21 +42,41 @@ namespace Checkup.Core.Services
             //PlacePiece(7, 6, new Knight { IsBlack = false });
             //PlacePiece(7, 7, new Rook { IsBlack = false });
         }
-        public void ClickedSquare(int x, int y)
+        public bool MovePiece(int fromX, int fromY, int toX, int toY)
         {
-            Console.WriteLine($"Clicked {x},{y}");
-            var clickedSquare = Board.Squares[x, y];
-            if (clickedSquare != null)
-            {
-                SelectedPiece = clickedSquare;
-            }
-            if (SelectedPiece != null && clickedSquare == null)
-            {
-                PlacePiece(x, y, SelectedPiece);
-            }
+            var currentPiece = Board.Squares[fromX, fromY];
+            if (currentPiece == null) { return false; }
 
+            var targetMove = (toX, toY);
+
+            var validMoves = currentPiece.GetValidMoves(Board, fromX, fromY);
+
+            if (currentPiece != null && validMoves.Contains(targetMove))
+            {
+                if (Board.Squares[toX, toY] != null)
+                {
+                    //CapturePiece
+                }
+                PlacePiece(toX, toY, currentPiece);
+                PlacePiece(fromX, fromY, null);
+                return true;
+            }
+            return false;
         }
-        public void PlacePiece(int x, int y, IPiece piece)
+        //public static void CapturePiece(int fromX, int fromY, int toX, int toY)
+        //{
+        //    var currentPiece = Board.Squares[fromX, fromY];
+        //    var targetPiece = Board.Squares[toX, toY];
+        //    var targetMove = (toX, toY);
+        //    var validMoves = currentPiece.GetValidMoves(Board, fromX, fromY);
+        //    if (currentPiece != null && targetPiece != null && validMoves.Contains(targetMove))
+        //    {
+        //        PlacePiece(toX, toY, currentPiece);
+        //        PlacePiece(fromX, fromY, null);
+        //    }
+        //}
+
+        private void PlacePiece(int x, int y, IPiece? piece)
         {
             Console.WriteLine($"Clicked {x},{y}");
 

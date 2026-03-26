@@ -8,7 +8,6 @@ namespace Checkup.App.Views;
 public partial class BoardView : ContentView
 {
     private readonly BoardViewModel _viewModel;
-
     public BoardView()
     {
         InitializeComponent();
@@ -41,13 +40,15 @@ public partial class BoardView : ContentView
                 int r = row;
                 int c = col;
 
+                var vm = _viewModel.Squares[r * 8 + c];
+
+                square.BindingContext = vm;
+                square.SetBinding(Label.TextProperty, nameof(SquareViewModel.Symbol));
+
                 var tap = new TapGestureRecognizer();
                 tap.Tapped += (s, e) =>
                 {
-                    
                     _viewModel.ClickedSquare(r, c);
-                    
-                    UpdateSquare(square, r, c); 
                 };
                 square.GestureRecognizers.Add(tap);
 
@@ -57,22 +58,35 @@ public partial class BoardView : ContentView
                 BoardGrid.Children.Add(square);
 
                 // Initialize the text for empty squares
-                UpdateSquare(square, row, col);
+                //UpdateSquare(square, row, col);
             }
         }
     }
-    private void UpdateSquare(Label square, int row, int col)
-    {
-        var piece = _viewModel.Board.Squares[row, col];
-        square.FontFamily = "Segoe UI Symbol";
+    //private void RefreshBoard()
+    //{
+    //    foreach (var child in BoardGrid.Children)
+    //    {
+    //        if (child is Label label)
+    //        {
+    //            int row = Grid.GetRow(label);
+    //            int col = Grid.GetColumn(label);
 
-        var symbol = piece switch
-        {
-            IPiece p when p.IsBlack => p.Symbol.ToString(),
-            IPiece p => p.Symbol.ToString(),
-            _ => string.Empty
-        };
+    //            UpdateSquare(label, row, col);
+    //        }
+    //    }
+    //}
+    //private void UpdateSquare(Label square, int row, int col)
+    //{
+    //    var piece = _viewModel.Board.Squares[row, col];
+    //    square.FontFamily = "Segoe UI Symbol";
 
-        square.Text = symbol;
-    }
+    //    var symbol = piece switch
+    //    {
+    //        IPiece p when p.IsBlack => p.Symbol.ToString(),
+    //        IPiece p => p.Symbol.ToString(),
+    //        _ => string.Empty
+    //    };
+
+    //    square.Text = symbol;
+    //}
 }
