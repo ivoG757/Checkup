@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Checkup.App.ViewModels
 {
-    internal class MainPageViewModel
+    public class MainPageViewModel
     {
+
     }
 }

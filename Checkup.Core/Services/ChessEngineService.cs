@@ -15,14 +15,14 @@ namespace Checkup.Core.Services
         public void SetPiecesOnBoard()
         {
             IPiece whitePawn = new Pawn { IsBlack = false };
-            //PlacePiece(0, 0, new Rook { IsBlack = true });
+            PlacePiece(0, 0, new Rook { IsBlack = true });
             //PlacePiece(0, 1, new Knight { IsBlack = true });
             //PlacePiece(0, 2, new Bishop { IsBlack = true });
             //PlacePiece(0, 3, new Queen { IsBlack = true });
             //PlacePiece(0, 4, new King { IsBlack = true });
             //PlacePiece(0, 5, new Bishop { IsBlack = true });
             //PlacePiece(0, 6, new Knight { IsBlack = true });
-            //PlacePiece(0, 7, new Rook { IsBlack = true });
+            PlacePiece(0, 7, new Rook { IsBlack = true });
 
             // Black pawns
             for (int c = 0; c < 8; c++)
@@ -33,14 +33,14 @@ namespace Checkup.Core.Services
                 PlacePiece(6, c, new Pawn { IsBlack = false });
 
             // White back rank
-            //PlacePiece(7, 0, new Rook { IsBlack = false });
+            PlacePiece(7, 0, new Rook { IsBlack = false });
             //PlacePiece(7, 1, new Knight { IsBlack = false });
             //PlacePiece(7, 2, new Bishop { IsBlack = false });
             //PlacePiece(7, 3, new Queen { IsBlack = false });
             //PlacePiece(7, 4, new King { IsBlack = false });
             //PlacePiece(7, 5, new Bishop { IsBlack = false });
             //PlacePiece(7, 6, new Knight { IsBlack = false });
-            //PlacePiece(7, 7, new Rook { IsBlack = false });
+            PlacePiece(7, 7, new Rook { IsBlack = false });
         }
         public bool MovePiece(int fromX, int fromY, int toX, int toY)
         {
@@ -63,18 +63,6 @@ namespace Checkup.Core.Services
             }
             return false;
         }
-        //public static void CapturePiece(int fromX, int fromY, int toX, int toY)
-        //{
-        //    var currentPiece = Board.Squares[fromX, fromY];
-        //    var targetPiece = Board.Squares[toX, toY];
-        //    var targetMove = (toX, toY);
-        //    var validMoves = currentPiece.GetValidMoves(Board, fromX, fromY);
-        //    if (currentPiece != null && targetPiece != null && validMoves.Contains(targetMove))
-        //    {
-        //        PlacePiece(toX, toY, currentPiece);
-        //        PlacePiece(fromX, fromY, null);
-        //    }
-        //}
 
         private void PlacePiece(int x, int y, IPiece? piece)
         {
