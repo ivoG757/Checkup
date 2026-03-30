@@ -56,7 +56,11 @@ public class BoardViewModel : INotifyPropertyChanged
 
         if (!ChessEngine.MovePiece(fromX, fromY, x, y))
         {
-            _selectedPosition = null;
+            if (_selectedPosition != null && _selectedPosition.Value == (x, y))
+            {
+                _selectedPosition = null;
+                return;
+            }
             return;
         }
 
