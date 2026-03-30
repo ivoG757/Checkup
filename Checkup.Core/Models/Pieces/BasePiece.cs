@@ -8,6 +8,8 @@ namespace Checkup.Core.Models.Pieces
         public abstract char Symbol { get; }
         public abstract List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY);
 
+        //TODO: Add a capture method that can be called when a piece is captured 
+
         /// <summary>
         /// Helper to ensure coordinates are on the board
         /// </summary>

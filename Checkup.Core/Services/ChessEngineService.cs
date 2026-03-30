@@ -14,7 +14,6 @@ namespace Checkup.Core.Services
 
         public void SetPiecesOnBoard()
         {
-            IPiece whitePawn = new Pawn { IsBlack = false };
             PlacePiece(0, 0, new Rook { IsBlack = true });
             //PlacePiece(0, 1, new Knight { IsBlack = true });
             //PlacePiece(0, 2, new Bishop { IsBlack = true });
@@ -66,8 +65,6 @@ namespace Checkup.Core.Services
 
         private void PlacePiece(int x, int y, IPiece? piece)
         {
-            Console.WriteLine($"Clicked {x},{y}");
-
             Board.Squares[x, y] = piece;
         }
     }

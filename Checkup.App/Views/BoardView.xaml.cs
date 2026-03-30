@@ -56,37 +56,7 @@ public partial class BoardView : ContentView
                 Grid.SetColumn(square, col);
 
                 BoardGrid.Children.Add(square);
-
-                // Initialize the text for empty squares
-                //UpdateSquare(square, row, col);
             }
         }
     }
-    //private void RefreshBoard()
-    //{
-    //    foreach (var child in BoardGrid.Children)
-    //    {
-    //        if (child is Label label)
-    //        {
-    //            int row = Grid.GetRow(label);
-    //            int col = Grid.GetColumn(label);
-
-    //            UpdateSquare(label, row, col);
-    //        }
-    //    }
-    //}
-    //private void UpdateSquare(Label square, int row, int col)
-    //{
-    //    var piece = _viewModel.Board.Squares[row, col];
-    //    square.FontFamily = "Segoe UI Symbol";
-
-    //    var symbol = piece switch
-    //    {
-    //        IPiece p when p.IsBlack => p.Symbol.ToString(),
-    //        IPiece p => p.Symbol.ToString(),
-    //        _ => string.Empty
-    //    };
-
-    //    square.Text = symbol;
-    //}
 }

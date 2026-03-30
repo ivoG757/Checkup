@@ -29,7 +29,7 @@ namespace Checkup.Core.Models.Pieces
                 else
                 {
                     if (board.Squares[i, y].IsBlack != IsBlack)
-                        moves.Add((i, y)); // can capture
+                        moves.Add((i, y)); // can capture 
                     break; // blocked
                 }
             }

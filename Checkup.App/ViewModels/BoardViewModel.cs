@@ -1,19 +1,15 @@
-﻿//using Android.Hardware.Lights;
-//using AndroidX.Lifecycle;
-using Checkup.Core.Models;
+﻿using Checkup.Core.Models;
 using Checkup.Core.Models.Interfaces;
 using Checkup.Core.Models.Pieces;
 using Checkup.Core.Services;
 using Checkup.Infrastructure.ChessEngine;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
-//using static Android.Provider.DocumentsContract;
 
 namespace Checkup.App.ViewModels;
 
 public class BoardViewModel : INotifyPropertyChanged
 {
-    public Board Board => ChessEngine.Board;
     public IChessEngineService ChessEngine { get; }
     public List<SquareViewModel> Squares { get; } = new();
     public BoardViewModel(IChessEngineService service)
@@ -45,16 +41,22 @@ public class BoardViewModel : INotifyPropertyChanged
     {
         if (_selectedPosition == null)
         {
+            var piece = ChessEngine.Board.Squares[x, y];
+
+            if (piece == null)
+                return;
+
             _selectedPosition = (x, y);
             return;
         }
 
         var (fromX, fromY) = _selectedPosition.Value;
 
-        var movingPiece = Board.Squares[fromX, fromY];
+        var movingPiece = ChessEngine.Board.Squares[fromX, fromY];
 
         if (!ChessEngine.MovePiece(fromX, fromY, x, y))
-        { 
+        {
+            _selectedPosition = null;
             return;
         }
 
