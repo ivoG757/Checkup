@@ -1,17 +1,18 @@
 ﻿using Checkup.Core.Common;
 using Checkup.Core.Models.Interfaces;
+using Checkup.Core.Models.Pieces;
 using System;
 using System.Collections.Generic;
 
 namespace Checkup.Core.Models.Pieces
 {
-    public class Pawn : IPiece
+    public class Pawn : BasePiece
     {
+        public override bool IsBlack { get; set; } = false;
         public bool HasMoved { get; set; } = false;
-        public bool IsBlack { get; set; } = false;
-        public char Symbol => IsBlack ? (char)ChessPiecesEmojisBlack.Pawn : (char)ChessPiecesEmojisWhite.Pawn;
+        public override char Symbol => IsBlack ? (char)ChessPiecesEmojisBlack.Pawn : (char)ChessPiecesEmojisWhite.Pawn;
 
-        public List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
+        public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
             var moves = new List<(int, int)>();
             int direction = IsBlack ? 1 : -1;
@@ -42,13 +43,5 @@ namespace Checkup.Core.Models.Pieces
 
             return moves;
         }
-
-        /// <summary>
-        /// Helper to ensure coordinates are on the board
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        private bool IsInBounds(int x, int y) => x >= 0 && x < 8 && y >= 0 && y < 8;
     }
 }
