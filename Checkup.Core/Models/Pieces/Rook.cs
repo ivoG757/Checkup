@@ -13,7 +13,7 @@ namespace Checkup.Core.Models.Pieces
 
         public override List<(int x, int y)> GetValidMoves(Board board, int x, int y)
         {
-            var moves = new List<(int, int)>();
+            var validMoves = new List<(int, int)>();
 
             /*
               (0,0) (0,1) (0,2)
@@ -25,11 +25,11 @@ namespace Checkup.Core.Models.Pieces
             for (int i = x - 1; i >= 0; i--)
             {
                 if (board.Squares[i, y] == null)
-                    moves.Add((i, y));
+                    validMoves.Add((i, y));
                 else
                 {
                     if (board.Squares[i, y].IsBlack != IsBlack)
-                        moves.Add((i, y)); // can capture 
+                        validMoves.Add((i, y)); // can capture 
                     break; // blocked
                 }
             }
@@ -38,11 +38,11 @@ namespace Checkup.Core.Models.Pieces
             for (int i = x + 1; i < 8; i++)
             {
                 if (board.Squares[i, y] == null)
-                    moves.Add((i, y));
+                    validMoves.Add((i, y));
                 else
                 {
                     if (board.Squares[i, y].IsBlack != IsBlack)
-                        moves.Add((i, y));
+                        validMoves.Add((i, y));
                     break;
                 }
             }
@@ -51,11 +51,11 @@ namespace Checkup.Core.Models.Pieces
             for (int j = y - 1; j >= 0; j--)
             {
                 if (board.Squares[x, j] == null)
-                    moves.Add((x, j));
+                    validMoves.Add((x, j));
                 else
                 {
                     if (board.Squares[x, j].IsBlack != IsBlack)
-                        moves.Add((x, j));
+                        validMoves.Add((x, j));
                     break;
                 }
             }
@@ -64,16 +64,16 @@ namespace Checkup.Core.Models.Pieces
             for (int j = y + 1; j < 8; j++)
             {
                 if (board.Squares[x, j] == null)
-                    moves.Add((x, j));
+                    validMoves.Add((x, j));
                 else
                 {
                     if (board.Squares[x, j].IsBlack != IsBlack)
-                        moves.Add((x, j));
+                        validMoves.Add((x, j));
                     break;
                 }
             }
 
-            return moves;
+            return validMoves;
         }
     }
 }

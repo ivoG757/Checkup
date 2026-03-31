@@ -33,7 +33,7 @@ namespace Checkup.Core.Services
 
             // White back rank
             PlacePiece(7, 0, new Rook { IsBlack = false });
-            //PlacePiece(7, 1, new Knight { IsBlack = false });
+            PlacePiece(7, 1, new Knight { IsBlack = false });
             //PlacePiece(7, 2, new Bishop { IsBlack = false });
             //PlacePiece(7, 3, new Queen { IsBlack = false });
             //PlacePiece(7, 4, new King { IsBlack = false });
