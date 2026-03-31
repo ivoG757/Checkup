@@ -31,7 +31,6 @@ public partial class BoardView : ContentView
             {
                 var square = new Label
                 {
-                    BackgroundColor = (row + col) % 2 == 0 ? Colors.DarkGray : Colors.Black,
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
                     FontSize = 50
@@ -44,6 +43,8 @@ public partial class BoardView : ContentView
 
                 square.BindingContext = vm;
                 square.SetBinding(Label.TextProperty, nameof(SquareViewModel.Symbol));
+                // Bind background to the viewmodel's computed BackgroundColor
+                square.SetBinding(VisualElement.BackgroundColorProperty, nameof(SquareViewModel.BackgroundColor));
 
                 var tap = new TapGestureRecognizer();
                 tap.Tapped += (s, e) =>

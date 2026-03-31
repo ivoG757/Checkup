@@ -58,6 +58,12 @@ namespace Checkup.Core.Services
                 }
                 PlacePiece(toX, toY, currentPiece);
                 PlacePiece(fromX, fromY, null);
+
+                if (currentPiece is Pawn pawn)
+                {
+                    pawn.HasMoved = true;
+                }
+
                 return true;
             }
             return false;

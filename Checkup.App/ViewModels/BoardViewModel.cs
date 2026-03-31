@@ -25,7 +25,7 @@ public class BoardViewModel : INotifyPropertyChanged
         }
         SyncFromEngine();
     }
-    //private IPiece _selectedPiece { get; set; }
+
     private void SyncFromEngine()
     {
         for (int r = 0; r < 8; r++)
@@ -33,42 +33,54 @@ public class BoardViewModel : INotifyPropertyChanged
             for (int c = 0; c < 8; c++)
             {
                 Squares[r * 8 + c].Piece = ChessEngine.Board.Squares[r, c];
+                Squares[r * 8 + c].IsSelected = false;
             }
         }
     }
+
     private (int x, int y)? _selectedPosition;
     public void ClickedSquare(int x, int y)
     {
+        // If nothing selected, select this square (if it has a piece)
         if (_selectedPosition == null)
         {
             var piece = ChessEngine.Board.Squares[x, y];
-
             if (piece == null)
                 return;
 
             _selectedPosition = (x, y);
+            Squares[x * 8 + y].IsSelected = true;
+            return;
+        }
+
+        // If clicked same square again, unselect
+        if (_selectedPosition.Value == (x, y))
+        {
+            Squares[x * 8 + y].IsSelected = false;
+            _selectedPosition = null;
             return;
         }
 
         var (fromX, fromY) = _selectedPosition.Value;
-
         var movingPiece = ChessEngine.Board.Squares[fromX, fromY];
 
+        // Attempt move
         if (!ChessEngine.MovePiece(fromX, fromY, x, y))
         {
-            if (_selectedPosition != null && _selectedPosition.Value == (x, y))
-            {
-                _selectedPosition = null;
-                return;
-            }
+            // If move failed, keep selection or unselect if clicked on previously selected square handled above
             return;
         }
 
-        this.Squares[fromX * 8 + fromY].Piece = null;
-        this.Squares[x * 8 + y].Piece = movingPiece;
+        // Update viewmodels: clear old, set new, clear selection
+        Squares[fromX * 8 + fromY].Piece = null;
+        Squares[fromX * 8 + fromY].IsSelected = false;
+
+        Squares[x * 8 + y].Piece = movingPiece;
+        Squares[x * 8 + y].IsSelected = false;
 
         _selectedPosition = null;
     }
+
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
