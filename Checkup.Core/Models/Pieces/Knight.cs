@@ -1,8 +1,6 @@
-﻿using Checkup.Core.Common;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Checkup.Core.Models.Pieces
@@ -10,9 +8,6 @@ namespace Checkup.Core.Models.Pieces
     public class Knight : BasePiece
     {
         public override bool IsBlack { get; set; } = false;
-
-        public override char Symbol => IsBlack ? (char)ChessPiecesEmojisBlack.Knight : (char)ChessPiecesEmojisWhite.Knight;
-
         public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
 

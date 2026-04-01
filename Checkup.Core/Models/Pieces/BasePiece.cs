@@ -5,7 +5,6 @@ namespace Checkup.Core.Models.Pieces
     public abstract class BasePiece : IPiece
     {
         public abstract bool IsBlack { get; set; }
-        public abstract char Symbol { get; }
         public abstract List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY);
 
         //TODO: Add a capture method that can be called when a piece is captured 

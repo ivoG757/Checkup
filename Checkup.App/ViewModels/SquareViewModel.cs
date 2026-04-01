@@ -1,6 +1,8 @@
 ﻿using Checkup.Core.Models.Interfaces;
 using System.ComponentModel;
 using Microsoft.Maui.Graphics;
+using Checkup.Core.Models.Pieces;
+using Checkup.Core.Common;
 
 namespace Checkup.App.ViewModels;
 
@@ -29,7 +31,18 @@ public class SquareViewModel : INotifyPropertyChanged
         }
     }
 
-    public string Symbol => Piece?.Symbol.ToString() ?? "";
+    public string Symbol => Piece switch
+    {
+        //TODO: Move this logic to a helper class or extension method to avoid cluttering the ViewModel with piece-specific logic and imlement real icons 
+        null => "",
+        _ when Piece is Checkup.Core.Models.Pieces.Pawn => Piece.IsBlack ? "♟" : "♙", 
+        _ when Piece is Checkup.Core.Models.Pieces.Rook => Piece.IsBlack ? "♜" : "♖",
+        _ when Piece is Checkup.Core.Models.Pieces.Knight => Piece.IsBlack ? "♞" : "♘",
+        _ when Piece is Checkup.Core.Models.Pieces.Bishop => Piece.IsBlack ? "♝" : "♗",
+        //_ when Piece is Checkup.Core.Models.Pieces.Queen => Piece.IsBlack ? "♛" : "♕",
+        //_ when Piece is Checkup.Core.Models.Pieces.King => Piece.IsBlack ? "♚" : "♔",
+        _ => ""
+    };
 
     private bool _isSelected;
     public bool IsSelected

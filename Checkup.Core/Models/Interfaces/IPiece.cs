@@ -8,7 +8,6 @@ namespace Checkup.Core.Models.Interfaces
     public interface IPiece
     {
         bool IsBlack { get; set; }
-        char Symbol { get; }
         List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY);
     }
 }

@@ -1,6 +1,4 @@
-﻿using Checkup.Core.Common;
-using Checkup.Core.Models.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,8 +7,6 @@ namespace Checkup.Core.Models.Pieces
     public class Rook : BasePiece
     {
         public override bool IsBlack { get; set; } = false;
-        public override char Symbol => IsBlack ? (char)ChessPiecesEmojisBlack.Rook : (char)ChessPiecesEmojisWhite.Rook;
-
         public override List<(int x, int y)> GetValidMoves(Board board, int x, int y)
         {
             var validMoves = new List<(int, int)>();

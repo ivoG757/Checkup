@@ -5,9 +5,6 @@ namespace Checkup.Core.Models.Pieces
     public class Bishop : BasePiece
     {
         public override bool IsBlack { get; set; } = false;
-
-        public override char Symbol => IsBlack ? (char)ChessPiecesEmojisBlack.Bishop : (char)ChessPiecesEmojisWhite.Bishop;
-
         public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
             var validMoves = new List<(int x, int y)>();
