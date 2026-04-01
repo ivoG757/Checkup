@@ -1,4 +1,5 @@
-﻿using Checkup.Core.Models.Pieces;
+﻿using Checkup.Core.Common.Enums;
+using Checkup.Core.Models.Pieces;
 using System;
 using System.Collections.Generic;
 
@@ -8,6 +9,7 @@ namespace Checkup.Core.Models.Pieces
     {
         public override bool IsBlack { get; set; } = false;
         public bool HasMoved { get; set; } = false;
+        public override PieceType Type => PieceType.Pawn;
         public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
             var moves = new List<(int, int)>();

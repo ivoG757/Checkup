@@ -29,11 +29,11 @@ public partial class BoardView : ContentView
         {
             for (int col = 0; col < 8; col++)
             {
-                var square = new Label
+                var square = new Image
                 {
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    FontSize = 50
+                    IsVisible = true,
+                    Aspect = Aspect.AspectFit
+
                 };
 
                 int r = row;
@@ -42,8 +42,7 @@ public partial class BoardView : ContentView
                 var vm = _viewModel.Squares[r * 8 + c];
 
                 square.BindingContext = vm;
-                square.SetBinding(Label.TextProperty, nameof(SquareViewModel.Symbol));
-                // Bind background to the viewmodel's computed BackgroundColor
+                square.SetBinding(Image.SourceProperty, nameof(SquareViewModel.PieceImage));
                 square.SetBinding(VisualElement.BackgroundColorProperty, nameof(SquareViewModel.BackgroundColor));
 
                 var tap = new TapGestureRecognizer();

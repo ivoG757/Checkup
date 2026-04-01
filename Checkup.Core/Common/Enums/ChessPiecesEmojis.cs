@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Checkup.Core.Common
+namespace Checkup.Core.Common.Enums
 {
     public enum ChessPiecesEmojisBlack
     {

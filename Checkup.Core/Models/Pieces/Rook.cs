@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Checkup.Core.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,6 +8,7 @@ namespace Checkup.Core.Models.Pieces
     public class Rook : BasePiece
     {
         public override bool IsBlack { get; set; } = false;
+        public override PieceType Type => PieceType.Rook;
         public override List<(int x, int y)> GetValidMoves(Board board, int x, int y)
         {
             var validMoves = new List<(int, int)>();

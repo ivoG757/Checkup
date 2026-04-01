@@ -1,10 +1,13 @@
 ﻿using Checkup.Core.Common;
+using Checkup.Core.Common.Enums;
 
 namespace Checkup.Core.Models.Pieces
 {
     public class Bishop : BasePiece
     {
         public override bool IsBlack { get; set; } = false;
+        public override PieceType Type => PieceType.Bishop;
+
         public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
             var validMoves = new List<(int x, int y)>();

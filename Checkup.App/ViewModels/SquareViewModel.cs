@@ -1,8 +1,9 @@
-﻿using Checkup.Core.Models.Interfaces;
-using System.ComponentModel;
-using Microsoft.Maui.Graphics;
-using Checkup.Core.Models.Pieces;
+﻿using Checkup.App.Services;
 using Checkup.Core.Common;
+using Checkup.Core.Models.Interfaces;
+using Checkup.Core.Models.Pieces;
+using Microsoft.Maui.Graphics;
+using System.ComponentModel;
 
 namespace Checkup.App.ViewModels;
 
@@ -26,23 +27,12 @@ public class SquareViewModel : INotifyPropertyChanged
             {
                 _piece = value;
                 OnPropertyChanged(nameof(Piece));
-                OnPropertyChanged(nameof(Symbol));
+                OnPropertyChanged(nameof(PieceImage));
             }
         }
     }
 
-    public string Symbol => Piece switch
-    {
-        //TODO: Move this logic to a helper class or extension method to avoid cluttering the ViewModel with piece-specific logic and imlement real icons 
-        null => "",
-        _ when Piece is Checkup.Core.Models.Pieces.Pawn => Piece.IsBlack ? "♟" : "♙", 
-        _ when Piece is Checkup.Core.Models.Pieces.Rook => Piece.IsBlack ? "♜" : "♖",
-        _ when Piece is Checkup.Core.Models.Pieces.Knight => Piece.IsBlack ? "♞" : "♘",
-        _ when Piece is Checkup.Core.Models.Pieces.Bishop => Piece.IsBlack ? "♝" : "♗",
-        //_ when Piece is Checkup.Core.Models.Pieces.Queen => Piece.IsBlack ? "♛" : "♕",
-        //_ when Piece is Checkup.Core.Models.Pieces.King => Piece.IsBlack ? "♚" : "♔",
-        _ => ""
-    };
+    public string? PieceImage => Piece == null ? null : PieceImageProvider.GetImagePath(Piece);
 
     private bool _isSelected;
     public bool IsSelected
@@ -60,7 +50,7 @@ public class SquareViewModel : INotifyPropertyChanged
     }
 
     // Computed background color used by the UI binding
-    public Color BackgroundColor => IsSelected ? Colors.Orange : ((Row + Col) % 2 == 0 ? Colors.DarkGray : Colors.Black);
+    public Color BackgroundColor => IsSelected ? Colors.Orange : ((Row + Col) % 2 == 0 ? Colors.Gray : Colors.Beige);
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string name)
