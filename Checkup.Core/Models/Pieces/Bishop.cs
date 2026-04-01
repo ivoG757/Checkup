@@ -11,12 +11,12 @@ namespace Checkup.Core.Models.Pieces
         public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
             var validMoves = new List<(int x, int y)>();
-            // Check diagonals in all four directions
+           
             validMoves.AddRange(CheckDirection(board, currentX, currentY, 1, 1));   // Bottom-right diagonal
             validMoves.AddRange(CheckDirection(board, currentX, currentY, 1, -1));  // Top-right diagonal
             validMoves.AddRange(CheckDirection(board, currentX, currentY, -1, 1));  // Bottom-left diagonal
-            validMoves.AddRange(CheckDirection(board, currentX, currentY, -1, -1));
-            // Down-right diagonal
+            validMoves.AddRange(CheckDirection(board, currentX, currentY, -1, -1)); // Top-left diagonal
+
             return validMoves;
         }
         private List<(int, int)> CheckDirection(Board board, int currentX, int currentY, int dx, int dy)
@@ -24,8 +24,8 @@ namespace Checkup.Core.Models.Pieces
             //2 , 4
             var validMoves = new List<(int x, int y)>();
 
-            int j = currentY + dx;
-            int x = currentX + dy;
+            int j = currentY + dy;
+            int x = currentX + dx;
 
             while (IsInBounds(x, j))
             {
