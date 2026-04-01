@@ -15,12 +15,12 @@ namespace Checkup.Core.Services
         public void SetPiecesOnBoard()
         {
             PlacePiece(0, 0, new Rook { IsBlack = true });
-            //PlacePiece(0, 1, new Knight { IsBlack = true });
-            //PlacePiece(0, 2, new Bishop { IsBlack = true });
+            PlacePiece(0, 1, new Knight { IsBlack = true });
+            PlacePiece(0, 2, new Bishop { IsBlack = true });
             //PlacePiece(0, 3, new Queen { IsBlack = true });
             //PlacePiece(0, 4, new King { IsBlack = true });
-            //PlacePiece(0, 5, new Bishop { IsBlack = true });
-            //PlacePiece(0, 6, new Knight { IsBlack = true });
+            PlacePiece(0, 5, new Bishop { IsBlack = true });
+            PlacePiece(0, 6, new Knight { IsBlack = true });
             PlacePiece(0, 7, new Rook { IsBlack = true });
 
             // Black pawns
@@ -34,11 +34,11 @@ namespace Checkup.Core.Services
             // White back rank
             PlacePiece(7, 0, new Rook { IsBlack = false });
             PlacePiece(7, 1, new Knight { IsBlack = false });
-            //PlacePiece(7, 2, new Bishop { IsBlack = false });
+            PlacePiece(7, 2, new Bishop { IsBlack = false });
             //PlacePiece(7, 3, new Queen { IsBlack = false });
             //PlacePiece(7, 4, new King { IsBlack = false });
-            //PlacePiece(7, 5, new Bishop { IsBlack = false });
-            //PlacePiece(7, 6, new Knight { IsBlack = false });
+            PlacePiece(7, 5, new Bishop { IsBlack = false });
+            PlacePiece(7, 6, new Knight { IsBlack = false });
             PlacePiece(7, 7, new Rook { IsBlack = false });
         }
         public bool MovePiece(int fromX, int fromY, int toX, int toY)
@@ -54,7 +54,7 @@ namespace Checkup.Core.Services
             {
                 if (Board.Squares[toX, toY] != null)
                 {
-                    //CapturePiece
+                    CapturePiece(toX, toY);
                 }
                 PlacePiece(toX, toY, currentPiece);
                 PlacePiece(fromX, fromY, null);
@@ -67,6 +67,10 @@ namespace Checkup.Core.Services
                 return true;
             }
             return false;
+        }
+        private void CapturePiece(int x, int y)
+        {
+            // Handle piece capture logic here (e.g., add to captured pieces list, update score, etc.)
         }
 
         private void PlacePiece(int x, int y, IPiece? piece)
