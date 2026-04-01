@@ -17,7 +17,7 @@ namespace Checkup.Core.Services
             PlacePiece(0, 0, new Rook { IsBlack = true });
             PlacePiece(0, 1, new Knight { IsBlack = true });
             PlacePiece(0, 2, new Bishop { IsBlack = true });
-            //PlacePiece(0, 3, new Queen { IsBlack = true });
+            PlacePiece(0, 3, new Queen { IsBlack = true });
             //PlacePiece(0, 4, new King { IsBlack = true });
             PlacePiece(0, 5, new Bishop { IsBlack = true });
             PlacePiece(0, 6, new Knight { IsBlack = true });
@@ -35,7 +35,7 @@ namespace Checkup.Core.Services
             PlacePiece(7, 0, new Rook { IsBlack = false });
             PlacePiece(7, 1, new Knight { IsBlack = false });
             PlacePiece(7, 2, new Bishop { IsBlack = false });
-            //PlacePiece(7, 3, new Queen { IsBlack = false });
+            PlacePiece(7, 3, new Queen { IsBlack = false });
             //PlacePiece(7, 4, new King { IsBlack = false });
             PlacePiece(7, 5, new Bishop { IsBlack = false });
             PlacePiece(7, 6, new Knight { IsBlack = false });
