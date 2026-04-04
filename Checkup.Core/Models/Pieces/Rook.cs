@@ -8,64 +8,23 @@ namespace Checkup.Core.Models.Pieces
     public class Rook : BasePiece
     {
         public override bool IsBlack { get; set; } = false;
+        public bool HasMoved { get; set; } = false;
         public override PieceType Type => PieceType.Rook;
+
+        public override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
+        {
+            throw new NotImplementedException();
+        }
+
         public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
-            var validMoves = new List<(int, int)>();
-
-            // Up
-            for (int i = currentX - 1; i >= 0; i--)
-            {
-                if (board.Squares[i, currentY] == null)
-                    validMoves.Add((i, currentY));
-                else
-                {
-                    if (board.Squares[i, currentY].IsBlack != IsBlack)
-                        validMoves.Add((i, currentY)); // can capture 
-                    break; // blocked
-                }
-            }
-
-            // Down
-            for (int i = currentX + 1; i < 8; i++)
-            {
-                if (board.Squares[i, currentY] == null)
-                    validMoves.Add((i, currentY));
-                else
-                {
-                    if (board.Squares[i, currentY].IsBlack != IsBlack)
-                        validMoves.Add((i, currentY));
-                    break;
-                }
-            }
-
-            // Left
-            for (int j = currentY - 1; j >= 0; j--)
-            {
-                if (board.Squares[currentX, j] == null)
-                    validMoves.Add((currentX, j));
-                else
-                {
-                    if (board.Squares[currentX, j].IsBlack != IsBlack)
-                        validMoves.Add((currentX, j));
-                    break;
-                }
-            }
-
-            // Right
-            for (int j = currentY + 1; j < 8; j++)
-            {
-                if (board.Squares[currentX, j] == null)
-                    validMoves.Add((currentX, j));
-                else
-                {
-                    if (board.Squares[currentX, j].IsBlack != IsBlack)
-                        validMoves.Add((currentX, j));
-                    break;
-                }
-            }
-
-            return validMoves;
+            return GetSlidingMoves(board, currentX, currentY, new (int, int)[]
+             {
+                (1, 0),   // Down
+                (-1, 0),  // Up
+                (0, 1),   // Right
+                (0, -1)   // Left
+             });
         }
     }
 }

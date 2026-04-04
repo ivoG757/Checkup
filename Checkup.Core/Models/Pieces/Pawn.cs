@@ -10,6 +10,12 @@ namespace Checkup.Core.Models.Pieces
         public override bool IsBlack { get; set; } = false;
         public bool HasMoved { get; set; } = false;
         public override PieceType Type => PieceType.Pawn;
+
+        public override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
+        {
+            throw new NotImplementedException();
+        }
+
         public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
             var moves = new List<(int, int)>();
