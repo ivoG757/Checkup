@@ -1,6 +1,7 @@
 ﻿using Checkup.Core.Models;
 using Checkup.Core.Models.Interfaces;
 using Checkup.Core.Models.Pieces;
+using System.IO.Pipelines;
 
 namespace Checkup.Core.Services
 {
@@ -41,11 +42,24 @@ namespace Checkup.Core.Services
             PlacePiece(7, 6, new Knight { IsBlack = false });
             PlacePiece(7, 7, new Rook { IsBlack = false });
         }
+        public List<(int x, int y)> GetValidMoves(int row, int col) 
+        {
+            var piece = GameState.BoardState.Squares[row, col];
+            return piece.GetValidMoves(GameState, row, col);
+        }
         public bool MovePiece(int fromX, int fromY, int toX, int toY)
         {
             var currentPiece = GameState.BoardState.Squares[fromX, fromY];
-            if (currentPiece == null) { return false; }
 
+            if (currentPiece == null)
+            { 
+                return false;
+            }
+
+            if (currentPiece.IsBlack != GameState.IsBlackTurn || !currentPiece.IsBlack != GameState.IsWhiteTurn)
+            {
+                return false;
+            }
             var targetMove = (toX, toY);
 
             var validMoves = currentPiece.GetValidMoves(GameState, fromX, fromY);
@@ -58,6 +72,9 @@ namespace Checkup.Core.Services
                 }
                 PlacePiece(toX, toY, currentPiece);
                 PlacePiece(fromX, fromY, null);
+
+                GameState.IsBlackTurn = !GameState.IsBlackTurn;
+                GameState.IsWhiteTurn = !GameState.IsWhiteTurn;
 
                 GameState.Moves.Add(new Move
                 {

@@ -48,12 +48,13 @@ public class BoardViewModel : INotifyPropertyChanged
         // If nothing selected, select this square (if it has a piece)
         if (_selectedPosition == null)
         {
+
             var piece = Board.Squares[x, y];
-
-            if (piece == null)
+            if (piece == null || piece.IsBlack != ChessEngine.GameState.IsBlackTurn)
+            {
                 return;
-
-            _possibleMoves = piece.GetValidMoves(ChessEngine.GameState, x, y);
+            }
+            _possibleMoves = ChessEngine.GetValidMoves(x, y);
             HighlightSquareColorState(_possibleMoves, true);
 
             _selectedPosition = (x, y);

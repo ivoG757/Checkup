@@ -6,7 +6,7 @@ namespace Checkup.Core.Services
     {
         public void SelectPiece(int row, int col) { }
         public void MovePiece(int toRow, int toCol) { }
-        public void GetValidMoves(int row, int col) { }
+        public List<(int x, int y)> GetValidMoves(int row, int col);
         public void IsCheckmate() { }
         public bool MovePiece(int fromX, int fromY, int toX, int toY);
         public GameState GameState { get; set; }

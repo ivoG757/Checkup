@@ -8,6 +8,9 @@ namespace Checkup.Core.Models
 {
     public class GameState
     {
+        
+        public bool IsBlackTurn { get; set; } = false; 
+        public bool IsWhiteTurn { get; set; } = true;
         public Board BoardState { get; set; } = new Board();
         public List<Move> Moves { get; set; } = new List<Move>(); 
         public GameFlags Flags { get; set; } = new GameFlags();
