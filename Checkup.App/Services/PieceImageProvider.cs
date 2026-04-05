@@ -1,4 +1,4 @@
-﻿using Checkup.Core.Common.Enums;
+﻿using Checkup.Core.Models.Enums;
 using Checkup.Core.Models.Interfaces;
 using Checkup.Core.Models.Pieces;
 using System;
@@ -9,6 +9,12 @@ namespace Checkup.App.Services
 {
     public static class PieceImageProvider
     {
+        public static class Highlights
+        {
+            public static string MoveHighlight => "move_highlight.jpg";
+            public static string CaptureHighlight => "capture_highlight.png";
+            public static string CheckHighlight => "check_highlight.png";
+        }
         public static string GetImagePath(IPiece piece)
         {
             string color = piece.IsBlack ? "black" : "white";

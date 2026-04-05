@@ -25,28 +25,36 @@ public class BoardViewModel : INotifyPropertyChanged
         }
         SyncFromEngine();
     }
-
+    public Board Board { get => ChessEngine.GameState.BoardState; }
     private void SyncFromEngine()
     {
         for (int r = 0; r < 8; r++)
         {
             for (int c = 0; c < 8; c++)
             {
-                Squares[r * 8 + c].Piece = ChessEngine.Board.Squares[r, c];
+                Squares[r * 8 + c].Piece = Board.Squares[r, c];
                 Squares[r * 8 + c].IsSelected = false;
+                Squares[r * 8 + c].IsHighlighted = false;
             }
         }
+        _selectedPosition = null;
     }
+    private List<(int x, int y)> _possibleMoves = new();
 
     private (int x, int y)? _selectedPosition;
     public void ClickedSquare(int x, int y)
     {
+
         // If nothing selected, select this square (if it has a piece)
         if (_selectedPosition == null)
         {
-            var piece = ChessEngine.Board.Squares[x, y];
+            var piece = Board.Squares[x, y];
+
             if (piece == null)
                 return;
+
+            _possibleMoves = piece.GetValidMoves(ChessEngine.GameState, x, y);
+            HighlightSquareColorState(_possibleMoves, true);
 
             _selectedPosition = (x, y);
             Squares[x * 8 + y].IsSelected = true;
@@ -58,28 +66,46 @@ public class BoardViewModel : INotifyPropertyChanged
         {
             Squares[x * 8 + y].IsSelected = false;
             _selectedPosition = null;
+            HighlightSquareColorState(_possibleMoves, false);
+
             return;
         }
 
         var (fromX, fromY) = _selectedPosition.Value;
-        var movingPiece = ChessEngine.Board.Squares[fromX, fromY];
+        var movingPiece = Board.Squares[fromX, fromY];
 
         // Attempt move
         if (!ChessEngine.MovePiece(fromX, fromY, x, y))
         {
             // If move failed, keep selection or unselect if clicked on previously selected square handled above
+
+            //ResetInteractionState();
             return;
         }
 
-        // Update viewmodels: clear old, set new, clear selection
-        Squares[fromX * 8 + fromY].Piece = null;
-        Squares[fromX * 8 + fromY].IsSelected = false;
-
-        Squares[x * 8 + y].Piece = movingPiece;
-        Squares[x * 8 + y].IsSelected = false;
-
-        _selectedPosition = null;
+        //sync from engine to handle any special moves (castling, promotion, en passant) and to ensure consistency
+        SyncFromEngine();
     }
+    public void HighlightSquareColorState(List<(int x, int y)> squares, bool IsHighlight)
+    {
+        foreach (var (x, y) in squares)
+        {
+            Squares[x * 8 + y].IsHighlighted = IsHighlight;
+        }
+    }
+    //private void ResetInteractionState()
+    //{
+    //    HighlightSquareColorState(_possibleMoves, false);
+    //    _possibleMoves.Clear();
+
+    //    _selectedPosition = null;
+
+    //    foreach (var square in Squares)
+    //    {
+    //        square.IsSelected = false;
+    //        square.IsHighlighted = false;
+    //    }
+    //}
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

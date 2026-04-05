@@ -1,4 +1,4 @@
-﻿using Checkup.Core.Common.Enums;
+﻿using Checkup.Core.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,11 +8,11 @@ namespace Checkup.Core.Models.Pieces
     public class King : BasePiece
     {
         public override bool IsBlack { get; set; } = false;
-        public bool HasMoved { get; set; } = false;
         public override PieceType Type => PieceType.King;
 
-        public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
+        public override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
         {
+            var board = state.BoardState;
             var validMoves = new List<(int x, int y)>();
 
             var kingsMoves = new List<(int x, int y)>
@@ -43,6 +43,7 @@ namespace Checkup.Core.Models.Pieces
             }
             return validMoves;
         }
+
         //public bool CanCastle(Board board, int currentX, int currentY, int targetX, int targetY)
         //{
         //    // Castling logic: King moves two squares towards the rook, and the rook moves to the square next to the king

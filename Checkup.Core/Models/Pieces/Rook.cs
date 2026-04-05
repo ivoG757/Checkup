@@ -1,4 +1,4 @@
-﻿using Checkup.Core.Common.Enums;
+﻿using Checkup.Core.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,16 +8,15 @@ namespace Checkup.Core.Models.Pieces
     public class Rook : BasePiece
     {
         public override bool IsBlack { get; set; } = false;
-        public bool HasMoved { get; set; } = false;
         public override PieceType Type => PieceType.Rook;
-
         public override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
         {
             throw new NotImplementedException();
         }
-
-        public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
+        public override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
         {
+            var board = state.BoardState;
+
             return GetSlidingMoves(board, currentX, currentY, new (int, int)[]
              {
                 (1, 0),   // Down
@@ -26,5 +25,6 @@ namespace Checkup.Core.Models.Pieces
                 (0, -1)   // Left
              });
         }
+        
     }
 }

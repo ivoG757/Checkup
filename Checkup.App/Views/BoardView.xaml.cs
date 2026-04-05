@@ -1,4 +1,5 @@
-﻿using Checkup.App.ViewModels;
+﻿
+using Checkup.App.ViewModels;
 
 using Checkup.Core.Models.Interfaces;
 using Checkup.Core.Services;
@@ -29,27 +30,47 @@ public partial class BoardView : ContentView
         {
             for (int col = 0; col < 8; col++)
             {
-                var square = new Image
-                {
-                    IsVisible = true,
-                    Aspect = Aspect.AspectFit
+                var background = new BoxView();
+                var piece = new Image();
+                var highlightDot = new BoxView();
 
-                };
+                var square = new Grid();
+
+                //layers
+                square.Children.Add(background);
+                square.Children.Add(piece);
+                square.Children.Add(highlightDot);
+
+                //dot style
+                highlightDot.Color = Color.FromArgb("#a0a0a0");
+                highlightDot.WidthRequest = 25;
+                highlightDot.HeightRequest = 25;
+                highlightDot.CornerRadius = 15;
+                highlightDot.HorizontalOptions = LayoutOptions.Center;
+                highlightDot.VerticalOptions = LayoutOptions.Center;
+                highlightDot.IsVisible = false; // default hidden
 
                 int r = row;
                 int c = col;
 
                 var vm = _viewModel.Squares[r * 8 + c];
-
                 square.BindingContext = vm;
-                square.SetBinding(Image.SourceProperty, nameof(SquareViewModel.PieceImage));
-                square.SetBinding(VisualElement.BackgroundColorProperty, nameof(SquareViewModel.BackgroundColor));
+
+                //background binding
+                background.SetBinding(BoxView.ColorProperty, nameof(SquareViewModel.BackgroundColor));
+
+                //piece binding
+                piece.SetBinding(Image.SourceProperty, nameof(SquareViewModel.PieceImage));
+
+                //dot visibility binding
+                highlightDot.SetBinding(BoxView.IsVisibleProperty, nameof(SquareViewModel.IsHighlighted));
 
                 var tap = new TapGestureRecognizer();
                 tap.Tapped += (s, e) =>
                 {
                     _viewModel.ClickedSquare(r, c);
                 };
+
                 square.GestureRecognizers.Add(tap);
 
                 Grid.SetRow(square, row);

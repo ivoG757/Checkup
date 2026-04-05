@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Checkup.Core.Common.Enums
+namespace Checkup.Core.Models.Enums
 {
     public enum PieceType
     {

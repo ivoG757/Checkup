@@ -9,7 +9,7 @@ namespace Checkup.Core.Services
         public void GetValidMoves(int row, int col) { }
         public void IsCheckmate() { }
         public bool MovePiece(int fromX, int fromY, int toX, int toY);
-        public Board Board { get; set; }
+        public GameState GameState { get; set; }
         void SetPiecesOnBoard();
     }
 }

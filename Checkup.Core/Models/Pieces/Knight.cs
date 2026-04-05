@@ -1,4 +1,4 @@
-﻿using Checkup.Core.Common.Enums;
+﻿using Checkup.Core.Models.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +16,9 @@ namespace Checkup.Core.Models.Pieces
             throw new NotImplementedException();
         }
 
-        public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
+        public override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
         {
+            var board = state.BoardState;
 
             var knightsMovements = new List<(int x, int y)>
             {

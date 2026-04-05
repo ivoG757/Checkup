@@ -1,4 +1,4 @@
-﻿using Checkup.Core.Common.Enums;
+﻿using Checkup.Core.Models.Enums;
 using Checkup.Core.Models.Interfaces;
 
 namespace Checkup.Core.Models.Pieces
@@ -18,7 +18,7 @@ namespace Checkup.Core.Models.Pieces
         /// <param name="currentY">The zero-based row index of the piece's current position.</param>
         /// <returns>A list of coordinate pairs representing valid destination positions for the piece. The list is empty if no
         /// valid moves are available.</returns>
-        public abstract List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY);
+        public abstract List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY);
 
         /// <summary>
         /// Returns all squares that are attacked (controlled) by this piece from the specified position.
@@ -90,6 +90,20 @@ namespace Checkup.Core.Models.Pieces
             }
             return result;
         }
+
+        /// <summary>
+        /// Calculates all valid sliding moves from a given position in specified directions on the board.
+        /// </summary>
+        /// <remarks>A move is considered valid if the destination square is empty or occupied by an
+        /// opposing piece. The sliding stops when a piece of the same color is encountered or the edge of the board is
+        /// reached.</remarks>
+        /// <param name="board">The board on which to evaluate possible moves.</param>
+        /// <param name="x">The x-coordinate of the starting position.</param>
+        /// <param name="y">The y-coordinate of the starting position.</param>
+        /// <param name="directions">An array of direction vectors, where each tuple specifies the change in x and y for a single direction to
+        /// slide.</param>
+        /// <returns>A list of coordinate pairs representing all valid destination squares that can be reached by sliding from
+        /// the starting position in the given directions. The list may be empty if no moves are available.</returns>
         protected List<(int x, int y)> GetSlidingMoves(Board board, int x, int y, (int dx, int dy)[] directions)
         {
             var result = new List<(int, int)>();
@@ -109,7 +123,7 @@ namespace Checkup.Core.Models.Pieces
                     }
                     else
                     {
-                        if (piece.IsBlack == this.IsBlack)
+                        if (piece.IsBlack == IsBlack)
                         { 
                             break; 
                         }

@@ -1,5 +1,4 @@
-﻿using Checkup.Core.Common;
-using Checkup.Core.Common.Enums;
+﻿using Checkup.Core.Models.Enums;
 
 namespace Checkup.Core.Models.Pieces
 {
@@ -13,8 +12,9 @@ namespace Checkup.Core.Models.Pieces
             throw new NotImplementedException();
         }
 
-        public override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
+        public override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
         {
+            var board = state.BoardState;
             return GetSlidingMoves(board, currentX, currentY, new (int, int)[]
            {
                 (-1, -1), // Up-Left

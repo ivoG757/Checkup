@@ -1,8 +1,8 @@
 ﻿using Checkup.App.Services;
-using Checkup.Core.Common;
 using Checkup.Core.Models.Interfaces;
 using Checkup.Core.Models.Pieces;
 using Microsoft.Maui.Graphics;
+using static Checkup.App.Common.ColorsHolder;
 using System.ComponentModel;
 
 namespace Checkup.App.ViewModels;
@@ -33,6 +33,7 @@ public class SquareViewModel : INotifyPropertyChanged
     }
 
     public string? PieceImage => Piece == null ? null : PieceImageProvider.GetImagePath(Piece);
+    public string? HighlightImage => IsHighlighted ? PieceImageProvider.Highlights.MoveHighlight : null;
 
     private bool _isSelected;
     public bool IsSelected
@@ -49,8 +50,31 @@ public class SquareViewModel : INotifyPropertyChanged
         }
     }
 
-    // Computed background color used by the UI binding
-    public Color BackgroundColor => IsSelected ? Colors.Orange : ((Row + Col) % 2 == 0 ? Colors.Gray : Colors.Beige);
+    private bool _isHighlighted;
+    public bool IsHighlighted
+    {
+        get => _isHighlighted;
+        set
+        {
+            if (_isHighlighted != value)
+            {
+                _isHighlighted = value;
+                OnPropertyChanged(nameof(IsHighlighted));
+                OnPropertyChanged(nameof(HighlightImage));
+            }
+        }
+    }
+
+    // Background color used by the UI binding
+    public Color BackgroundColor
+    {
+        get
+        {
+            if (IsSelected) return selectedSquareColor;
+
+            return (Row + Col) % 2 == 0 ? darkSquareColor : lightSquareColor;
+        }
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string name)

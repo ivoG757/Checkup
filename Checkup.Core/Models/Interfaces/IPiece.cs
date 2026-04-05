@@ -1,4 +1,4 @@
-﻿using Checkup.Core.Common.Enums;
+﻿using Checkup.Core.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
@@ -10,6 +10,6 @@ namespace Checkup.Core.Models.Interfaces
     {
         bool IsBlack { get; set; }
         PieceType Type { get; }
-        List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY);
+        List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY);
     }
 }

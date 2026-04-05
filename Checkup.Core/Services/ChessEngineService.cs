@@ -10,7 +10,7 @@ namespace Checkup.Core.Services
         {
             SetPiecesOnBoard();
         }
-        public Board Board { get; set; } = new Board();
+        public GameState GameState { get; set; } = new GameState();
 
         public void SetPiecesOnBoard()
         {
@@ -43,31 +43,38 @@ namespace Checkup.Core.Services
         }
         public bool MovePiece(int fromX, int fromY, int toX, int toY)
         {
-            var currentPiece = Board.Squares[fromX, fromY];
+            var currentPiece = GameState.BoardState.Squares[fromX, fromY];
             if (currentPiece == null) { return false; }
 
             var targetMove = (toX, toY);
 
-            var validMoves = currentPiece.GetValidMoves(Board, fromX, fromY);
+            var validMoves = currentPiece.GetValidMoves(GameState, fromX, fromY);
 
             if (currentPiece != null && validMoves.Contains(targetMove))
             {
-                if (Board.Squares[toX, toY] != null)
+                if (GameState.BoardState.Squares[toX, toY] != null)
                 {
                     CapturePiece(toX, toY);
                 }
                 PlacePiece(toX, toY, currentPiece);
                 PlacePiece(fromX, fromY, null);
 
-                if (currentPiece is Pawn pawn)
+                GameState.Moves.Add(new Move
                 {
-                    pawn.HasMoved = true;
-                }
+                    MovedPiece = currentPiece,
+                    From = (fromX, fromY),
+                    To = (toX, toY)
+                });
 
                 return true;
             }
             return false;
         }
+        public bool IsFirstMove(IPiece piece, GameState state)
+        {
+            return !state.Moves.Any(m => m.MovedPiece == piece);
+        }
+
         private void CapturePiece(int x, int y)
         {
             // Handle piece capture logic here (e.g., add to captured pieces list, update score, etc.)
@@ -75,7 +82,7 @@ namespace Checkup.Core.Services
 
         private void PlacePiece(int x, int y, IPiece? piece)
         {
-            Board.Squares[x, y] = piece;
+            GameState.BoardState.Squares[x, y] = piece;
         }
     }
 }
