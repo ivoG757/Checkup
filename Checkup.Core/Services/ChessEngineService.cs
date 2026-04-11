@@ -56,7 +56,7 @@ namespace Checkup.Core.Services
                 return false;
             }
 
-            if (currentPiece.IsBlack != GameState.IsBlackTurn || !currentPiece.IsBlack != GameState.IsWhiteTurn)
+            if (currentPiece.IsBlack != GameState.IsBlackTurn)
             {
                 return false;
             }
