@@ -44,7 +44,7 @@ namespace Checkup.Core.Services
         public List<(int x, int y)> GetValidMoves(int row, int col) 
         {
             var piece = GameState.BoardState.Squares[row, col];
-            return piece.GetValidMoves(GameState, row, col);
+            return piece.GetValidMoves(GameState.BoardState, row, col);
         }
         private (int x, int y) _selectedPiece { get; set; }
 
@@ -68,7 +68,7 @@ namespace Checkup.Core.Services
 
             var targetMove = (toX, toY);
 
-            var validMoves = currentPiece.GetValidMoves(GameState, fromX, fromY);
+            var validMoves = currentPiece.GetValidMoves(GameState.BoardState, fromX, fromY);
 
             if (currentPiece != null && validMoves.Contains(targetMove))
             {
