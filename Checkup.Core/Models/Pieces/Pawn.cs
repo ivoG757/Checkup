@@ -10,14 +10,13 @@ namespace Checkup.Core.Models.Pieces
         public Pawn(bool isBlack) : base(isBlack) { }
         public override PieceType Type => PieceType.Pawn;
 
-        internal override List<(int x, int y)> GetAttackedSquares(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
         {
             throw new NotImplementedException();
         }
 
-        internal override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
-            var board = state.BoardState;
 
             var moves = new List<(int, int)>();
             int direction = IsBlack ? 1 : -1;
@@ -27,17 +26,18 @@ namespace Checkup.Core.Models.Pieces
             if (IsInBounds(nextRow, currentY) && board.Squares[nextRow, currentY] == null)
             {
                 moves.Add((nextRow, currentY));
-                //First move: move two squares forward if both are empty
-                int doubleStepRow = currentX + 2 * direction;
 
-                if (IsInBounds(doubleStepRow, currentY))
+                //Double move 
+                int startRow = IsBlack ? 1 : 6; 
+
+                if (currentX == startRow)
                 {
-                    if (board.Squares[doubleStepRow, currentY] == null)
+                    int doubleStepRow = currentX + 2 * direction;
+
+                    if (IsInBounds(doubleStepRow, currentY) &&
+                        board.Squares[doubleStepRow, currentY] == null)
                     {
-                        if (state.IsFirstMove(this))
-                        {
-                            moves.Add((doubleStepRow, currentY));
-                        }
+                        moves.Add((doubleStepRow, currentY));
                     }
                 }
             }

@@ -10,9 +10,8 @@ namespace Checkup.Core.Models.Pieces
         public King(bool isBlack) : base(isBlack) { }
         public override PieceType Type => PieceType.King;
 
-        internal override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
-            var board = state.BoardState;
             var validMoves = new List<(int x, int y)>();
 
             var kingsMoves = new List<(int x, int y)>
@@ -44,7 +43,7 @@ namespace Checkup.Core.Models.Pieces
             return validMoves;
         }
 
-        internal override List<(int x, int y)> GetAttackedSquares(GameState board, int currentX, int currentY)
+        internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
         {
             throw new NotImplementedException();
         }

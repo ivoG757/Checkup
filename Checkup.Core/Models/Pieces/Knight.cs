@@ -1,8 +1,9 @@
-﻿using Checkup.Core.Models.Enums;
+﻿
+using Checkup.Core.Models.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Text;         
 
 namespace Checkup.Core.Models.Pieces
 {
@@ -13,14 +14,13 @@ namespace Checkup.Core.Models.Pieces
         }
         public override PieceType Type => PieceType.Knight;
 
-        internal override List<(int x, int y)> GetAttackedSquares(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
         {
             throw new NotImplementedException();
         }
 
-        internal override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
-            var board = state.BoardState;
 
             var knightsMovements = new List<(int x, int y)>
             {

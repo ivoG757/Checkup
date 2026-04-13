@@ -9,15 +9,14 @@ namespace Checkup.Core.Models.Pieces
     {
         public Rook(bool isBlack) : base(isBlack) { }
         public override PieceType Type => PieceType.Rook;
-        internal override List<(int x, int y)> GetAttackedSquares(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
         {
             throw new NotImplementedException();
         }
-        internal override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
-            var board = state.BoardState;
 
-            return GetSlidingMoves(state, currentX, currentY, new (int, int)[]
+            return GetSlidingMoves(board, currentX, currentY, new (int, int)[]
              {
                 (1, 0),   // Down
                 (-1, 0),  // Up
