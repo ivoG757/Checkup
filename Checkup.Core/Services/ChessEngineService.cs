@@ -1,5 +1,5 @@
 ﻿using Checkup.Core.Models;
-using Checkup.Core.Models.Interfaces;
+using Checkup.Core.Models;
 using Checkup.Core.Models.Pieces;
 using System.IO.Pipelines;
 
@@ -11,41 +11,46 @@ namespace Checkup.Core.Services
         {
             SetPiecesOnBoard();
         }
-        public GameState GameState { get; set; } = new GameState();
+        internal GameState GameState { get; set; } = new GameState();
 
         public void SetPiecesOnBoard()
         {
-            PlacePiece(0, 0, new Rook { IsBlack = true });
-            PlacePiece(0, 1, new Knight { IsBlack = true });
-            PlacePiece(0, 2, new Bishop { IsBlack = true });
-            PlacePiece(0, 3, new Queen { IsBlack = true });
-            PlacePiece(0, 4, new King { IsBlack = true });
-            PlacePiece(0, 5, new Bishop { IsBlack = true });
-            PlacePiece(0, 6, new Knight { IsBlack = true });
-            PlacePiece(0, 7, new Rook { IsBlack = true });
+            PlacePiece(0, 0, new Rook(true));
+            PlacePiece(0, 1, new Knight(true));
+            PlacePiece(0, 2, new Bishop(true));
+            PlacePiece(0, 3, new Queen(true));
+            PlacePiece(0, 4, new King(true));
+            PlacePiece(0, 5, new Bishop(true));
+            PlacePiece(0, 6, new Knight(true));
+            PlacePiece(0, 7, new Rook(true));
 
             // Black pawns
             for (int c = 0; c < 8; c++)
-                PlacePiece(1, c, new Pawn { IsBlack = true });
-
+                PlacePiece(1, c, new Pawn(true));
             // White pawns
             for (int c = 0; c < 8; c++)
-                PlacePiece(6, c, new Pawn { IsBlack = false });
+                PlacePiece(6, c, new Pawn(false));
 
             // White back rank
-            PlacePiece(7, 0, new Rook { IsBlack = false });
-            PlacePiece(7, 1, new Knight { IsBlack = false });
-            PlacePiece(7, 2, new Bishop { IsBlack = false });
-            PlacePiece(7, 3, new Queen { IsBlack = false });
-            PlacePiece(7, 4, new King { IsBlack = false });
-            PlacePiece(7, 5, new Bishop { IsBlack = false });
-            PlacePiece(7, 6, new Knight { IsBlack = false });
-            PlacePiece(7, 7, new Rook { IsBlack = false });
+            PlacePiece(7, 0, new Rook(false));
+            PlacePiece(7, 1, new Knight(false));
+            PlacePiece(7, 2, new Bishop(false));
+            PlacePiece(7, 3, new Queen(false));
+            PlacePiece(7, 4, new King(false));
+            PlacePiece(7, 5, new Bishop(false));
+            PlacePiece(7, 6, new Knight(false));
+            PlacePiece(7, 7, new Rook(false));
         }
         public List<(int x, int y)> GetValidMoves(int row, int col) 
         {
             var piece = GameState.BoardState.Squares[row, col];
             return piece.GetValidMoves(GameState, row, col);
+        }
+        private (int x, int y) _selectedPiece { get; set; }
+
+        public BasePiece? GetPiece(int row, int col)
+        {
+            return GameState.BoardState.Squares[row, col];
         }
         public bool MovePiece(int fromX, int fromY, int toX, int toY)
         {
@@ -60,6 +65,7 @@ namespace Checkup.Core.Services
             {
                 return false;
             }
+
             var targetMove = (toX, toY);
 
             var validMoves = currentPiece.GetValidMoves(GameState, fromX, fromY);
@@ -74,30 +80,27 @@ namespace Checkup.Core.Services
                 PlacePiece(fromX, fromY, null);
 
                 GameState.IsBlackTurn = !GameState.IsBlackTurn;
-                GameState.IsWhiteTurn = !GameState.IsWhiteTurn;
 
-                GameState.Moves.Add(new Move
+                GameState.Moves.Add(new Move((fromX, fromY), (toX, toY))
                 {
                     MovedPiece = currentPiece,
-                    From = (fromX, fromY),
-                    To = (toX, toY)
                 });
 
                 return true;
             }
             return false;
         }
-        public bool IsFirstMove(IPiece piece, GameState state)
+        internal bool IsFirstMove(BasePiece piece, GameState state)
         {
             return !state.Moves.Any(m => m.MovedPiece == piece);
         }
 
-        private void CapturePiece(int x, int y)
+        public void CapturePiece(int x, int y)
         {
-            // Handle piece capture logic here (e.g., add to captured pieces list, update score, etc.)
+           
         }
 
-        private void PlacePiece(int x, int y, IPiece? piece)
+        internal void PlacePiece(int x, int y, BasePiece? piece)
         {
             GameState.BoardState.Squares[x, y] = piece;
         }

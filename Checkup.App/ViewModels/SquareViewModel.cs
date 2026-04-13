@@ -1,5 +1,5 @@
 ﻿using Checkup.App.Services;
-using Checkup.Core.Models.Interfaces;
+using Checkup.Core.Models;
 using Checkup.Core.Models.Pieces;
 using Microsoft.Maui.Graphics;
 using static Checkup.App.Common.ColorsHolder;
@@ -17,8 +17,8 @@ public class SquareViewModel : INotifyPropertyChanged
     public int Row { get; }
     public int Col { get; }
 
-    private IPiece? _piece;
-    public IPiece? Piece
+    private BasePiece? _piece;
+    public BasePiece? Piece
     {
         get => _piece;
         set

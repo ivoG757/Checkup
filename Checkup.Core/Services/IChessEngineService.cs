@@ -1,15 +1,14 @@
 ﻿using Checkup.Core.Models;
+using Checkup.Core.Models.Pieces;
 
 namespace Checkup.Core.Services
 {
     public interface IChessEngineService
     {
-        public void SelectPiece(int row, int col) { }
-        public void MovePiece(int toRow, int toCol) { }
-        public List<(int x, int y)> GetValidMoves(int row, int col);
-        public void IsCheckmate() { }
-        public bool MovePiece(int fromX, int fromY, int toX, int toY);
-        public GameState GameState { get; set; }
+        List<(int x, int y)> GetValidMoves(int row, int col);
+        void IsCheckmate() { }
+        public BasePiece? GetPiece(int row, int col);
+        public bool MovePiece(int xFrom, int yFrom, int xTo, int yTo);
         void SetPiecesOnBoard();
     }
 }

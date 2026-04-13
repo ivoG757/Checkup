@@ -5,17 +5,17 @@ using System.Collections.Generic;
 
 namespace Checkup.Core.Models.Pieces
 {
-    public class Pawn : BasePiece
+    internal class Pawn : BasePiece
     {
-        public override bool IsBlack { get; set; } = false;
+        public Pawn(bool isBlack) : base(isBlack) { }
         public override PieceType Type => PieceType.Pawn;
 
-        public override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
+        internal override List<(int x, int y)> GetAttackedSquares(GameState state, int currentX, int currentY)
         {
             throw new NotImplementedException();
         }
 
-        public override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
         {
             var board = state.BoardState;
 

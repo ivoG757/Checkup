@@ -1,5 +1,4 @@
 ﻿using Checkup.Core.Models;
-using Checkup.Core.Models.Interfaces;
 using Checkup.Core.Models.Pieces;
 using Checkup.Core.Services;
 using Checkup.Infrastructure.ChessEngine;
@@ -25,19 +24,18 @@ public class BoardViewModel : INotifyPropertyChanged
         }
         SyncFromEngine();
     }
-    public Board Board { get => ChessEngine.GameState.BoardState; }
+
     private void SyncFromEngine()
     {
         for (int r = 0; r < 8; r++)
         {
             for (int c = 0; c < 8; c++)
             {
-                Squares[r * 8 + c].Piece = Board.Squares[r, c];
+                Squares[r * 8 + c].Piece = ChessEngine.GetPiece(r, c);
                 Squares[r * 8 + c].IsSelected = false;
                 Squares[r * 8 + c].IsHighlighted = false;
             }
         }
-        _selectedPosition = null;
     }
     private List<(int x, int y)> _possibleMoves = new();
 
@@ -49,8 +47,9 @@ public class BoardViewModel : INotifyPropertyChanged
         if (_selectedPosition == null)
         {
 
-            var piece = Board.Squares[x, y];
-            if (piece == null || piece.IsBlack != ChessEngine.GameState.IsBlackTurn)
+            var piece = ChessEngine.GetPiece(x, y);
+
+            if (piece == null)
             {
                 return;
             }
@@ -73,7 +72,7 @@ public class BoardViewModel : INotifyPropertyChanged
         }
 
         var (fromX, fromY) = _selectedPosition.Value;
-        var movingPiece = Board.Squares[fromX, fromY];
+        var movingPiece = ChessEngine.GetPiece(fromX, fromY);
 
         // Attempt move
         if (!ChessEngine.MovePiece(fromX, fromY, x, y))
@@ -86,6 +85,7 @@ public class BoardViewModel : INotifyPropertyChanged
 
         //sync from engine to handle any special moves (castling, promotion, en passant) and to ensure consistency
         SyncFromEngine();
+        _selectedPosition = null;
     }
     public void HighlightSquareColorState(List<(int x, int y)> squares, bool IsHighlight)
     {
@@ -94,19 +94,19 @@ public class BoardViewModel : INotifyPropertyChanged
             Squares[x * 8 + y].IsHighlighted = IsHighlight;
         }
     }
-    //private void ResetInteractionState()
-    //{
-    //    HighlightSquareColorState(_possibleMoves, false);
-    //    _possibleMoves.Clear();
+    private void ResetInteractionState()
+    {
+        HighlightSquareColorState(_possibleMoves, false);
+        _possibleMoves.Clear();
 
-    //    _selectedPosition = null;
+        _selectedPosition = null;
 
-    //    foreach (var square in Squares)
-    //    {
-    //        square.IsSelected = false;
-    //        square.IsHighlighted = false;
-    //    }
-    //}
+        foreach (var square in Squares)
+        {
+            square.IsSelected = false;
+            square.IsHighlighted = false;
+        }
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

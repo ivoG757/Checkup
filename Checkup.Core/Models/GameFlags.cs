@@ -4,15 +4,14 @@ using System.Text;
 
 namespace Checkup.Core.Models
 {
-    public class GameFlags
+    internal class GameFlags
     {
-        public bool WhiteKingMoved {  get; set; }
-        public bool BlackKingMoved { get; set; }
+        internal bool WhiteKingMoved {  get; set; }
+        internal bool BlackKingMoved { get; set; }
 
-        public bool WhiteLeftRookMoved { get; set; }
-        public bool WhiteRightRookMoved { get; set; }
-
-        public bool BlackLeftRookMoved { get; set; }
-        public bool BlackRightRookMoved { get; set; }
+        internal bool WhiteLeftRookMoved { get; set; }
+        internal bool WhiteRightRookMoved { get; set; }
+        internal bool BlackLeftRookMoved { get; set; }
+        internal bool BlackRightRookMoved { get; set; }
     }
 }

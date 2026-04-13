@@ -2,20 +2,20 @@
 
 namespace Checkup.Core.Models.Pieces
 {
-    public class Bishop : BasePiece
+    internal class Bishop : BasePiece
     {
-        public override bool IsBlack { get; set; } = false;
+        public Bishop(bool isBlack) : base(isBlack) { }
+
         public override PieceType Type => PieceType.Bishop;
 
-        public override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
+        internal override List<(int x, int y)> GetAttackedSquares(GameState state, int currentX, int currentY)
         {
             throw new NotImplementedException();
         }
 
-        public override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
+        internal override List<(int x, int y)> GetValidMoves(GameState state, int currentX, int currentY)
         {
-            var board = state.BoardState;
-            return GetSlidingMoves(board, currentX, currentY, new (int, int)[]
+            return GetSlidingMoves(state, currentX, currentY, new (int, int)[]
            {
                 (-1, -1), // Up-Left
                 (-1, 1),  // Up-Right

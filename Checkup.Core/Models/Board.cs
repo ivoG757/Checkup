@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Checkup.Core.Models.Interfaces;
+using Checkup.Core.Models;
+using Checkup.Core.Models.Pieces;
 
 namespace Checkup.Core.Models
 {
-    public class Board
+    internal class Board
     {
-        public IPiece[,] Squares { get; set; } = new IPiece[8, 8];
+        internal BasePiece[,] Squares { get; set; } = new BasePiece[8, 8];
 
         public Board()
         {
@@ -15,7 +16,7 @@ namespace Checkup.Core.Models
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    Squares[x, y] = null;
+                    Squares[x, y] = null; 
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using Checkup.Core.Models.Interfaces;
+﻿using Checkup.Core.Models;
+using Checkup.Core.Models.Pieces;
 using System;
 using System.Collections.Generic;
 using System.Security.AccessControl;
@@ -9,18 +10,17 @@ namespace Checkup.Core.Models
     public class GameState
     {
         
-        public bool IsBlackTurn { get; set; } = false; 
-        public bool IsWhiteTurn { get; set; } = true;
-        public Board BoardState { get; set; } = new Board();
-        public List<Move> Moves { get; set; } = new List<Move>(); 
-        public GameFlags Flags { get; set; } = new GameFlags();
+        internal bool IsBlackTurn { get; set; } = false;
+        internal Board BoardState { get; set; } = new Board();
+        internal List<Move> Moves { get; set; } = new List<Move>(); 
+        internal GameFlags Flags { get; set; } = new GameFlags();
 
         /// <summary>
         /// Determines whether the specified piece has not made any moves yet.
         /// </summary>
         /// <param name="piece">The piece to check for its move history. Cannot be null.</param>
         /// <returns>true if the specified piece has not moved; otherwise, false.</returns>
-        public bool IsFirstMove(IPiece piece)
+        internal bool IsFirstMove(BasePiece piece)
         {
             return !Moves.Any(m => m.MovedPiece == piece);
         }

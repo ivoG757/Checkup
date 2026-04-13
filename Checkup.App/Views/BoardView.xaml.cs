@@ -1,7 +1,7 @@
 ﻿
 using Checkup.App.ViewModels;
 
-using Checkup.Core.Models.Interfaces;
+using Checkup.Core.Models;
 using Checkup.Core.Services;
 using Checkup.Infrastructure.ChessEngine;
 namespace Checkup.App.Views;
