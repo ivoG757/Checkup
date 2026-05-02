@@ -8,20 +8,21 @@ namespace Checkup.Core.Models.Pieces
 
         public override PieceType Type => PieceType.Bishop;
 
+        private (int x, int y)[] Directions => new (int, int)[]
+        {
+            (-1, -1), // Up-Left
+            (-1, 1),  // Up-Right
+            (1, -1),  // Down-Left
+            (1, 1),   // Down-Right
+        };
         internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
         {
-            throw new NotImplementedException();
+            return GetSlidingAttacks(board, currentX, currentY, Directions);
         }
 
         internal override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
-            return GetSlidingMoves(board, currentX, currentY, new (int, int)[]
-           {
-                (-1, -1), // Up-Left
-                (-1, 1),  // Up-Right
-                (1, -1),  // Down-Left
-                (1, 1),   // Down-Right
-           });
+           return GetSlidingMoves(board, currentX, currentY, Directions);
         }
     }
 }

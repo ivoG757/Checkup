@@ -12,6 +12,15 @@ namespace Checkup.Core.Models.Pieces
 
         internal override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
+            return KingsMoves(board, currentX, currentY, false);
+        }
+
+        internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
+        {
+            return KingsMoves(board, currentX, currentY, true);
+        }
+        private List<(int x, int y)> KingsMoves(Board board, int currentX, int currentY, bool includeOccupiedSquares)
+        {
             var validMoves = new List<(int x, int y)>();
 
             var kingsMoves = new List<(int x, int y)>
@@ -32,6 +41,12 @@ namespace Checkup.Core.Models.Pieces
                     if (board.Squares[m.x, m.y] == null)
                     {
                         validMoves.Add(m);
+                        continue;
+                    }
+                    if (includeOccupiedSquares)
+                    {
+                        validMoves.Add(m);
+                        continue;
                     }
                     else if (board.Squares[m.x, m.y].IsBlack != this.IsBlack)
                     {
@@ -41,11 +56,6 @@ namespace Checkup.Core.Models.Pieces
                 }
             }
             return validMoves;
-        }
-
-        internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
-        {
-            throw new NotImplementedException();
         }
     }
 }

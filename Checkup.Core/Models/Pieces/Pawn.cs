@@ -12,7 +12,21 @@ namespace Checkup.Core.Models.Pieces
 
         internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
         {
-            throw new NotImplementedException();
+            var moves = new List<(int, int)>(2);
+            int direction = IsBlack ? 1 : -1;
+            int nextRow = currentX + direction;
+
+            if (IsInBounds(nextRow, currentY + 1))
+            {
+                moves.Add((nextRow, currentY + 1));
+            }
+
+            if (IsInBounds(nextRow, currentY - 1))
+            {
+                moves.Add((nextRow, currentY - 1));
+            }
+
+            return moves;
         }
 
         internal override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)

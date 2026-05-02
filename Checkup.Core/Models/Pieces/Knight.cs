@@ -16,12 +16,15 @@ namespace Checkup.Core.Models.Pieces
 
         internal override List<(int x, int y)> GetAttackedSquares(Board board, int currentX, int currentY)
         {
-            throw new NotImplementedException();
+            return Knightmoves(board, currentX, currentY, true);
         }
 
         internal override List<(int x, int y)> GetValidMoves(Board board, int currentX, int currentY)
         {
-
+            return Knightmoves(board, currentX, currentY, false);
+        }
+        public List<(int x, int y)> Knightmoves(Board board, int currentX, int currentY, bool includeOccupiedSquares)
+        {
             var knightsMovements = new List<(int x, int y)>
             {
                 (x: currentX - 1, y: currentY - 2), // up left
@@ -37,10 +40,15 @@ namespace Checkup.Core.Models.Pieces
             foreach (var square in knightsMovements)
             {
                 var (x, y) = square;
-                
+
                 if (IsInBounds(x, y))
                 {
-                    if(board.Squares[x, y] == null)
+                    if (board.Squares[x, y] == null)
+                    {
+                        validMoves.Add((x, y));
+                        continue;
+                    }
+                    if (includeOccupiedSquares)
                     {
                         validMoves.Add((x, y));
                         continue;
@@ -54,6 +62,5 @@ namespace Checkup.Core.Models.Pieces
             }
             return validMoves;
         }
-
     }
 }
