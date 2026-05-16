@@ -23,7 +23,7 @@ namespace Checkup.Core.Models.Pieces
         {
             return Knightmoves(board, currentX, currentY, false);
         }
-        public List<(int x, int y)> Knightmoves(Board board, int currentX, int currentY, bool includeOccupiedSquares)
+        private List<(int x, int y)> Knightmoves(Board board, int currentX, int currentY, bool includeOccupiedSquares)
         {
             var knightsMovements = new List<(int x, int y)>
             {

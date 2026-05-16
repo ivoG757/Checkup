@@ -1,9 +1,6 @@
 ﻿
 using Checkup.App.ViewModels;
-
-using Checkup.Core.Models;
 using Checkup.Core.Services;
-using Checkup.Infrastructure.ChessEngine;
 namespace Checkup.App.Views;
 
 public partial class BoardView : ContentView
@@ -33,6 +30,7 @@ public partial class BoardView : ContentView
                 var background = new BoxView();
                 var piece = new Image();
                 var highlightDot = new BoxView();
+                var highlightHollowCircle = new BoxView();
 
                 var square = new Grid();
 
@@ -40,6 +38,7 @@ public partial class BoardView : ContentView
                 square.Children.Add(background);
                 square.Children.Add(piece);
                 square.Children.Add(highlightDot);
+                square.Children.Add(highlightHollowCircle);
 
                 //dot style
                 highlightDot.Color = Color.FromArgb("#a0a0a0");
@@ -49,6 +48,16 @@ public partial class BoardView : ContentView
                 highlightDot.HorizontalOptions = LayoutOptions.Center;
                 highlightDot.VerticalOptions = LayoutOptions.Center;
                 highlightDot.IsVisible = false; // default hidden
+
+                //hollow circle style
+                highlightHollowCircle.Color = Color.FromArgb("#ff0000");
+                highlightHollowCircle.WidthRequest = 25;
+                highlightHollowCircle.HeightRequest = 25;
+                highlightHollowCircle.CornerRadius = 15;
+                highlightHollowCircle.HorizontalOptions = LayoutOptions.Center;
+                highlightHollowCircle.VerticalOptions = LayoutOptions.Center;
+                highlightHollowCircle.IsVisible = false; // default hidden
+
 
                 int r = row;
                 int c = col;
@@ -64,6 +73,9 @@ public partial class BoardView : ContentView
 
                 //dot visibility binding
                 highlightDot.SetBinding(BoxView.IsVisibleProperty, nameof(SquareViewModel.IsHighlighted));
+
+                //hollow circle visibility binding
+                highlightHollowCircle.SetBinding(BoxView.IsVisibleProperty, nameof(SquareViewModel.IsHighlightedAttack));
 
                 var tap = new TapGestureRecognizer();
                 tap.Tapped += (s, e) =>

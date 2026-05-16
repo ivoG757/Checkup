@@ -49,7 +49,33 @@ public class SquareViewModel : INotifyPropertyChanged
             }
         }
     }
-
+    private bool _IsInCheck;
+    public bool IsInCheck { 
+        get => _IsInCheck;
+        set
+        {
+            if (_IsInCheck != value)
+            {
+                _IsInCheck = value;
+                OnPropertyChanged(nameof(IsInCheck));
+                OnPropertyChanged(nameof(BackgroundColor));
+            }
+        }
+    }
+    private bool _IsHighlightedAttack;
+    public bool IsHighlightedAttack
+    {
+        get => _IsHighlightedAttack;
+        set
+        {
+            if (_IsHighlightedAttack != value)
+            {
+                _IsHighlightedAttack = value;
+                OnPropertyChanged(nameof(IsHighlightedAttack));
+                OnPropertyChanged(nameof(HighlightImage));
+            }
+        }
+    }
     private bool _isHighlighted;
     public bool IsHighlighted
     {
@@ -71,7 +97,7 @@ public class SquareViewModel : INotifyPropertyChanged
         get
         {
             if (IsSelected) return selectedSquareColor;
-
+            if (IsInCheck) return checkSquareColor;
             return (Row + Col) % 2 == 0 ? darkSquareColor : lightSquareColor;
         }
     }

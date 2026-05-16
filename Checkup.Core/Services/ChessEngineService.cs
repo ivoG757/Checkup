@@ -42,8 +42,10 @@ namespace Checkup.Core.Services
         }
         public List<(int x, int y)> GetValidMoves(int row, int col)
         {
+
             var piece = GameState.BoardState.Squares[row, col];
-            return piece.GetValidMoves(GameState.BoardState, row, col);
+            var moves = piece.GetValidMoves(GameState.BoardState, row, col);
+            return moves.Where(move => !WouldLeaveKingInCheck(row, col, move.x, move.y) && GetPiece(move.x, move.y) == null).ToList();
         }
 
         public BasePiece? GetPiece(int row, int col)
@@ -201,12 +203,16 @@ namespace Checkup.Core.Services
 
         private void stalemate()
         {
-
+            GameState.EndReason = GameEndReason.Stalemate;
+            GameState.Result = GameResult.Draw;
         }
 
         private void checkmate()
         {
-            throw new NotImplementedException();
+            GameState.EndReason = GameEndReason.Checkmate;
+
+            GameState.Result = GameState.IsBlackTurn
+                ? GameResult.WhiteWon : GameResult.BlackWon;
         }
 
         private bool HasAnyLegalMoves(bool isBlack)
@@ -247,7 +253,7 @@ namespace Checkup.Core.Services
             {
                 return (true, false);
             }
-         
+
             if (fromX != toX || Math.Abs(toY - fromY) != 2)
             {
                 return (true, false);
@@ -255,14 +261,14 @@ namespace Checkup.Core.Services
 
             bool isBlack = currentPiece.IsBlack;
 
-            
+
             if (isBlack && GameState.Flags.BlackKingMoved)
                 return (false, false);
 
             if (!isBlack && GameState.Flags.WhiteKingMoved)
                 return (false, false);
 
-           
+
             if (IsInCheck(isBlack))
             {
                 return (false, false);
@@ -380,7 +386,7 @@ namespace Checkup.Core.Services
             }
             return null;
         }
-        public bool IsInCheck(bool isBlack)
+        private bool IsInCheck(bool isBlack)
         {
             (int kingX, int kingY)? kingsPosition = FindKing(isBlack);
 
@@ -396,7 +402,7 @@ namespace Checkup.Core.Services
                     var piece = GameState.BoardState.Squares[x, y];
                     if (piece != null && piece.IsBlack != isBlack)
                     {
-                        var opponentMoves = piece.GetValidMoves(GameState.BoardState, x, y);
+                        var opponentMoves = piece.GetAttackedSquares(GameState.BoardState, x, y);
                         if (opponentMoves.Contains(kingsPosition.Value))
                         {
                             return true;
@@ -412,15 +418,47 @@ namespace Checkup.Core.Services
             return !state.Moves.Any(m => m.MovedPiece == piece);
         }
 
-        internal void PlacePiece(int x, int y, BasePiece piece)
+        private void PlacePiece(int x, int y, BasePiece piece)
         {
             GameState.BoardState.Squares[x, y] = piece;
         }
 
         public List<(int x, int y)> GetValidAttacks(int row, int col)
         {
-            var piece = GameState.BoardState.Squares[row, col];
-            return piece.GetAttackedSquares(GameState.BoardState, row, col);
+            var piece = GetPiece(row, col);
+
+            if (piece == null)
+            {
+                return new();
+            }
+
+            var moves = piece.GetValidMoves(GameState.BoardState, row, col);
+
+            return moves
+                .Where(move =>
+                {
+                    var target = GetPiece(move.x, move.y);
+
+                    return target != null &&
+                           target.IsBlack != piece.IsBlack &&
+                           !WouldLeaveKingInCheck(row, col, move.x, move.y);
+                })
+                .ToList();
+        }
+
+        public bool IsPlayerInCheck()
+        {
+            return IsInCheck(GameState.IsBlackTurn);
+        }
+
+        public GameResult GetGameResult()
+        {
+            return GameState.Result;
+        }
+
+        public bool IsBlackTurn()
+        {
+            return GameState.IsBlackTurn;
         }
     }
 }

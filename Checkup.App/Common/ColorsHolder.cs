@@ -25,5 +25,10 @@ namespace Checkup.App.Common
         /// Represents the default color used to highlight elements in the user interface.
         /// </summary>
         public static Color highlightColor = Colors.LightSkyBlue;
+
+        /// <summary>
+        /// Represents the color used to indicate a king in check.
+        /// </summary>
+        public static Color checkSquareColor = Colors.Red;
     }
 }
