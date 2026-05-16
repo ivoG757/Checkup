@@ -68,9 +68,21 @@ namespace Checkup.Core.Services
             PlacePiece(move.To.x, move.To.y, move.MovedPiece);
             PlacePiece(move.From.x, move.From.y, null);
 
+            if (move.IsCastling)
+            {
+                bool isKingside = move.To.y == 6;
+
+                int rookFromY = isKingside ? 7 : 0;
+                int rookToY = isKingside ? 5 : 3;
+
+                var rook = GameState.BoardState.Squares[move.To.x, rookFromY];
+
+                PlacePiece(move.To.x, rookToY, rook);
+                PlacePiece(move.To.x, rookFromY, null);
+            }
+
             GameState.Moves.Add(move);
 
-            GameState.IsBlackTurn = !GameState.IsBlackTurn;
         }
 
         public bool MovePiece(int fromX, int fromY, int toX, int toY)
@@ -117,6 +129,7 @@ namespace Checkup.Core.Services
                 ExecuteMove(move);
 
                 successfulMove = true;
+                GameState.IsBlackTurn = !GameState.IsBlackTurn;
 
                 HandleEndOfTurn(successfulMove, move);
 
