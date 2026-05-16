@@ -63,6 +63,15 @@ namespace Checkup.Core.Services
             GameState.Moves.RemoveAt(GameState.Moves.Count - 1);
             GameState.IsBlackTurn = !GameState.IsBlackTurn;
         }
+        private void ExecuteMove(Move move)
+        {
+            PlacePiece(move.To.x, move.To.y, move.MovedPiece);
+            PlacePiece(move.From.x, move.From.y, null);
+
+            GameState.Moves.Add(move);
+
+            GameState.IsBlackTurn = !GameState.IsBlackTurn;
+        }
 
         public bool MovePiece(int fromX, int fromY, int toX, int toY)
         {
@@ -80,6 +89,7 @@ namespace Checkup.Core.Services
             var targetPiece = GameState.BoardState.Squares[toX, toY];
 
             (bool flowControl, bool value) = TryHandleCastling(fromX, fromY, toX, toY, currentPiece, targetPiece);
+
             if (!flowControl)
             {
                 return value;
@@ -98,285 +108,245 @@ namespace Checkup.Core.Services
                     return false;
                 }
 
-                if (GameState.BoardState.Squares[toX, toY] != null) // Capture piece
+                var move = new Move((fromX, fromY), (toX, toY))
                 {
-                    GameState.Moves.Add(new Move((fromX, fromY), (toX, toY))
-                    {
-                        MovedPiece = currentPiece,
-                        CapturedPiece = GameState.BoardState.Squares[toX, toY]
-                    });
-                }
-                else
-                {
-                    GameState.Moves.Add(new Move((fromX, fromY), (toX, toY)) // No capture, just move
-                    {
-                        MovedPiece = currentPiece,
-                    });
-                }
+                    MovedPiece = currentPiece,
+                    CapturedPiece = GameState.BoardState.Squares[toX, toY]
+                };
 
-                PlacePiece(toX, toY, currentPiece);
-                PlacePiece(fromX, fromY, null);
-
-                GameState.IsBlackTurn = !GameState.IsBlackTurn;
+                ExecuteMove(move);
 
                 successfulMove = true;
-                switch (currentPiece.Type)
-                {
-                    case PieceType.King:
-                        if (currentPiece.IsBlack)
-                        {
-                            GameState.Flags.BlackKingMoved = true;
-                        }
-                        else
-                        {
-                            GameState.Flags.WhiteKingMoved = true;
-                        }
-                        break;
-                    case PieceType.Rook:
-                        if (currentPiece.IsBlack)
-                        {
-                            if (fromX == 0 && fromY == 0)
-                            {
-                                GameState.Flags.BlackRightRookMoved = true;
-                            }
-                            else if (fromX == 0 && fromY == 7)
-                            {
-                                GameState.Flags.BlackLeftRookMoved = true;
-                            }
-                        }
-                        else
-                        {
-                            if (fromX == 7 && fromY == 0)
-                            {
-                                GameState.Flags.WhiteRightRookMoved = true;
-                            }
-                            else if (fromX == 7 && fromY == 7)
-                            {
-                                GameState.Flags.WhiteLeftRookMoved = true;
-                            }
-                        }
-                        break;
-                }
+
+                HandleEndOfTurn(successfulMove, move);
+
             }
             return successfulMove;
         }
 
-        private (bool flowControl, bool value) TryHandleCastling(
-    int fromX,
-    int fromY,
-    int toX,
-    int toY,
-    BasePiece currentPiece,
-    BasePiece targetPiece)
+        private void HandleEndOfTurn(bool successfulMove, Move move)
         {
-            // Not a castling attempt
-            if (currentPiece.Type != PieceType.King ||
-                targetPiece == null ||
-                targetPiece.Type != PieceType.Rook ||
-                targetPiece.IsBlack != currentPiece.IsBlack)
+            var currentPiece = move.MovedPiece;
+            var fromX = move.From.x;
+            var fromY = move.From.y;
+            var toX = move.To.x;
+            var toY = move.To.y;
+
+            switch (currentPiece.Type)
+            {
+                case PieceType.King:
+                    if (currentPiece.IsBlack)
+                    {
+                        GameState.Flags.BlackKingMoved = true;
+                    }
+                    else
+                    {
+                        GameState.Flags.WhiteKingMoved = true;
+                    }
+                    break;
+
+                case PieceType.Rook:
+                    if (currentPiece.IsBlack)
+                    {
+                        if (fromX == 0 && fromY == 0)
+                        {
+                            GameState.Flags.BlackRightRookMoved = true;
+                        }
+                        else if (fromX == 0 && fromY == 7)
+                        {
+                            GameState.Flags.BlackLeftRookMoved = true;
+                        }
+                    }
+                    else
+                    {
+                        if (fromX == 7 && fromY == 0)
+                        {
+                            GameState.Flags.WhiteRightRookMoved = true;
+                        }
+                        else if (fromX == 7 && fromY == 7)
+                        {
+                            GameState.Flags.WhiteLeftRookMoved = true;
+                        }
+                    }
+                    break;
+            }
+            if (successfulMove)
+            {
+                if (!HasAnyLegalMoves(GameState.IsBlackTurn))
+                {
+                    if (IsInCheck(GameState.IsBlackTurn))
+                    {
+                        checkmate();
+                    }
+                    else
+                    {
+                        stalemate();
+                    }
+                }
+            }
+        }
+
+        private void stalemate()
+        {
+
+        }
+
+        private void checkmate()
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool HasAnyLegalMoves(bool isBlack)
+        {
+            for (int fromX = 0; fromX < 8; fromX++)
+            {
+                for (int fromY = 0; fromY < 8; fromY++)
+                {
+                    var piece = GameState.BoardState.Squares[fromX, fromY];
+
+                    if (piece == null || piece.IsBlack != isBlack)
+                        continue;
+
+                    var moves = piece.GetValidMoves(GameState.BoardState, fromX, fromY);
+
+                    foreach (var move in moves)
+                    {
+                        if (!WouldLeaveKingInCheck(fromX, fromY, move.x, move.y))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private (bool flowControl, bool value) TryHandleCastling(
+            int fromX,
+            int fromY,
+            int toX,
+            int toY,
+            BasePiece currentPiece,
+            BasePiece targetPiece)
+        {
+            if (currentPiece.Type != PieceType.King)
+            {
+                return (true, false);
+            }
+         
+            if (fromX != toX || Math.Abs(toY - fromY) != 2)
             {
                 return (true, false);
             }
 
-            // King already moved
-            if (currentPiece.IsBlack)
-            {
-                if (GameState.Flags.BlackKingMoved)
-                    return (false, false);
-            }
-            else
-            {
-                if (GameState.Flags.WhiteKingMoved)
-                    return (false, false);
-            }
+            bool isBlack = currentPiece.IsBlack;
 
-            // King cannot castle while in check
-            if (IsInCheck(currentPiece.IsBlack))
+            
+            if (isBlack && GameState.Flags.BlackKingMoved)
+                return (false, false);
+
+            if (!isBlack && GameState.Flags.WhiteKingMoved)
+                return (false, false);
+
+           
+            if (IsInCheck(isBlack))
             {
                 return (false, false);
             }
 
-            // WHITE QUEENSIDE
-            if (!currentPiece.IsBlack && toX == 7 && toY == 0)
+            bool isKingside = toY > fromY;
+
+            int rookY = isKingside ? 7 : 0;
+            int rookTargetY = isKingside ? 5 : 3;
+            int kingTargetY = isKingside ? 6 : 2;
+
+            var rook = GameState.BoardState.Squares[fromX, rookY];
+
+            if (rook == null ||
+                rook.Type != PieceType.Rook ||
+                rook.IsBlack != isBlack)
             {
-                if (GameState.Flags.WhiteRightRookMoved)
-                    return (false, false);
-
-                // Squares between rook and king must be empty
-                if (GameState.BoardState.Squares[7, 1] != null ||
-                    GameState.BoardState.Squares[7, 2] != null ||
-                    GameState.BoardState.Squares[7, 3] != null)
-                {
-                    return (false, false);
-                }
-
-                // King cannot pass through check
-                if (WouldLeaveKingInCheck(7, 4, 7, 3) ||
-                    WouldLeaveKingInCheck(7, 4, 7, 2))
-                {
-                    return (false, false);
-                }
-
-                // Move king
-                PlacePiece(7, 2, currentPiece);
-
-                // Move rook
-                PlacePiece(7, 3, targetPiece);
-
-                // Clear old squares
-                PlacePiece(7, 4, null);
-                PlacePiece(7, 0, null);
-
-                GameState.Moves.Add(new Move((7, 4), (7, 2))
-                {
-                    MovedPiece = currentPiece,
-                    IsCastling = true
-                });
-
-                GameState.Flags.WhiteKingMoved = true;
-                GameState.Flags.WhiteRightRookMoved = true;
-
-                GameState.IsBlackTurn = !GameState.IsBlackTurn;
-
-                return (false, true);
+                return (false, false);
             }
 
-            // WHITE KINGSIDE
-            if (!currentPiece.IsBlack && toX == 7 && toY == 7)
+            if (isBlack)
             {
-                if (GameState.Flags.WhiteLeftRookMoved)
+                if (isKingside && GameState.Flags.BlackLeftRookMoved)
                     return (false, false);
 
-                if (GameState.BoardState.Squares[7, 5] != null ||
-                    GameState.BoardState.Squares[7, 6] != null)
-                {
+                if (!isKingside && GameState.Flags.BlackRightRookMoved)
                     return (false, false);
-                }
-
-                if (WouldLeaveKingInCheck(7, 4, 7, 5) ||
-                    WouldLeaveKingInCheck(7, 4, 7, 6))
-                {
+            }
+            else
+            {
+                if (isKingside && GameState.Flags.WhiteLeftRookMoved)
                     return (false, false);
-                }
 
-                PlacePiece(7, 6, currentPiece);
-                PlacePiece(7, 5, targetPiece);
-
-                PlacePiece(7, 4, null);
-                PlacePiece(7, 7, null);
-
-                GameState.Moves.Add(new Move((7, 4), (7, 6))
-                {
-                    MovedPiece = currentPiece,
-                    IsCastling = true
-                });
-
-                GameState.Flags.WhiteKingMoved = true;
-                GameState.Flags.WhiteLeftRookMoved = true;
-
-                GameState.IsBlackTurn = !GameState.IsBlackTurn;
-
-                return (false, true);
+                if (!isKingside && GameState.Flags.WhiteRightRookMoved)
+                    return (false, false);
             }
 
-            // BLACK QUEENSIDE
-            if (currentPiece.IsBlack && toX == 0 && toY == 0)
+            int start = Math.Min(fromY, rookY) + 1;
+            int end = Math.Max(fromY, rookY) - 1;
+
+            for (int y = start; y <= end; y++)
             {
-                if (GameState.Flags.BlackRightRookMoved)
-                    return (false, false);
-
-                if (GameState.BoardState.Squares[0, 1] != null ||
-                    GameState.BoardState.Squares[0, 2] != null ||
-                    GameState.BoardState.Squares[0, 3] != null)
+                if (GameState.BoardState.Squares[fromX, y] != null)
                 {
                     return (false, false);
                 }
+            }
 
-                if (WouldLeaveKingInCheck(0, 4, 0, 3) ||
-                    WouldLeaveKingInCheck(0, 4, 0, 2))
-                {
-                    return (false, false);
-                }
+            int step = isKingside ? 1 : -1;
 
-                PlacePiece(0, 2, currentPiece);
-                PlacePiece(0, 3, targetPiece);
+            if (WouldLeaveKingInCheck(fromX, fromY, fromX, fromY + step) ||
+                WouldLeaveKingInCheck(fromX, fromY, fromX, kingTargetY))
+            {
+                return (false, false);
+            }
 
-                PlacePiece(0, 4, null);
-                PlacePiece(0, 0, null);
+            var move = new Move((fromX, fromY), (fromX, kingTargetY))
+            {
+                MovedPiece = currentPiece,
+                IsCastling = true
+            };
 
-                GameState.Moves.Add(new Move((0, 4), (0, 2))
-                {
-                    MovedPiece = currentPiece,
-                    IsCastling = true
-                });
+            ExecuteMove(move);
 
+            if (isBlack)
+            {
                 GameState.Flags.BlackKingMoved = true;
-                GameState.Flags.BlackRightRookMoved = true;
 
-                GameState.IsBlackTurn = !GameState.IsBlackTurn;
-
-                return (false, true);
+                if (isKingside)
+                    GameState.Flags.BlackLeftRookMoved = true;
+                else
+                    GameState.Flags.BlackRightRookMoved = true;
             }
-
-
-            // BLACK KINGSIDE
-            if (currentPiece.IsBlack && toX == 0 && toY == 7)
+            else
             {
-                if (GameState.Flags.BlackLeftRookMoved)
-                    return (false, false);
+                GameState.Flags.WhiteKingMoved = true;
 
-                if (GameState.BoardState.Squares[0, 5] != null ||
-                    GameState.BoardState.Squares[0, 6] != null)
-                {
-                    return (false, false);
-                }
-
-                if (WouldLeaveKingInCheck(0, 4, 0, 5) ||
-                    WouldLeaveKingInCheck(0, 4, 0, 6))
-                {
-                    return (false, false);
-                }
-
-                PlacePiece(0, 6, currentPiece);
-                PlacePiece(0, 5, targetPiece);
-
-                PlacePiece(0, 4, null);
-                PlacePiece(0, 7, null);
-
-                GameState.Moves.Add(new Move((0, 4), (0, 6))
-                {
-                    MovedPiece = currentPiece,
-                    IsCastling = true
-                });
-
-                GameState.Flags.BlackKingMoved = true;
-                GameState.Flags.BlackLeftRookMoved = true;
-
-                GameState.IsBlackTurn = !GameState.IsBlackTurn;
-
-                return (false, true);
+                if (isKingside)
+                    GameState.Flags.WhiteLeftRookMoved = true;
+                else
+                    GameState.Flags.WhiteRightRookMoved = true;
             }
 
-            return (true, false);
-        }
+            GameState.IsBlackTurn = !GameState.IsBlackTurn;
 
-        private bool Castle(BasePiece to, BasePiece from)
-        {
-            var successfulMove = false;
-            return successfulMove;
+            return (false, true);
         }
         private bool WouldLeaveKingInCheck(int fromX, int fromY, int toX, int toY)
         {
             var piece = GameState.BoardState.Squares[fromX, fromY];
             var captured = GameState.BoardState.Squares[toX, toY];
 
-            // apply
             GameState.BoardState.Squares[toX, toY] = piece;
             GameState.BoardState.Squares[fromX, fromY] = null;
 
             var inCheck = IsInCheck(piece.IsBlack);
 
-            // revert 
             GameState.BoardState.Squares[fromX, fromY] = piece;
             GameState.BoardState.Squares[toX, toY] = captured;
 
