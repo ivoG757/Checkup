@@ -36,6 +36,7 @@ public class BoardViewModel : INotifyPropertyChanged
                 Squares[r * 8 + c].IsSelected = false;
                 Squares[r * 8 + c].IsHighlighted = false;
                 Squares[r * 8 + c].IsInCheck = false;
+                Squares[r * 8 + c].IsHighlightedAttack = false;
             }
         }
     }

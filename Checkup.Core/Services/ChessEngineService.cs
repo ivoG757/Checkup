@@ -67,9 +67,20 @@ namespace Checkup.Core.Services
         }
         private void ExecuteMove(Move move)
         {
+            // Handle en passant capture FIRST
+            if (move.IsEnPassant)
+            {
+                int capturedPawnX = move.From.x;
+                int capturedPawnY = move.To.y;
+
+                PlacePiece(capturedPawnX, capturedPawnY, null);
+            }
+
+            // Move main piece
             PlacePiece(move.To.x, move.To.y, move.MovedPiece);
             PlacePiece(move.From.x, move.From.y, null);
 
+            // Handle castling rook move
             if (move.IsCastling)
             {
                 bool isKingside = move.To.y == 6;
@@ -83,8 +94,22 @@ namespace Checkup.Core.Services
                 PlacePiece(move.To.x, rookFromY, null);
             }
 
-            GameState.Moves.Add(move);
+            // Update en passant target
+            if (move.MovedPiece.Type == PieceType.Pawn &&
+                Math.Abs(move.To.x - move.From.x) == 2)
+            {
+                GameState.EnPassantTarget =
+                (
+                    (move.From.x + move.To.x) / 2,
+                    move.From.y
+                );
+            }
+            else
+            {
+                GameState.EnPassantTarget = null;
+            }
 
+            GameState.Moves.Add(move);
         }
 
         public bool MovePiece(int fromX, int fromY, int toX, int toY)
@@ -102,11 +127,18 @@ namespace Checkup.Core.Services
             }
             var targetPiece = GameState.BoardState.Squares[toX, toY];
 
-            (bool flowControl, bool value) = TryHandleCastling(fromX, fromY, toX, toY, currentPiece, targetPiece);
+            (bool flowControlCastling, bool valueCastling) = TryHandleCastling(fromX, fromY, toX, toY, currentPiece, targetPiece);
 
-            if (!flowControl)
+            if (!flowControlCastling)
             {
-                return value;
+                return valueCastling;
+            }
+
+            (bool flowControlEnPassant, bool valueEnPassant) = TryHandleEnPassant(fromX, fromY, toX, toY, currentPiece, targetPiece);
+
+            if (!flowControlEnPassant)
+            {
+                return valueEnPassant;
             }
 
             var targetMove = (toX, toY);
@@ -137,6 +169,60 @@ namespace Checkup.Core.Services
 
             }
             return successfulMove;
+        }
+
+        private (bool flowControlEnPassant, bool valueEnPassant) TryHandleEnPassant(
+            int fromX,
+            int fromY,
+            int toX,
+            int toY,
+            BasePiece currentPiece,
+            BasePiece targetPiece)
+        {
+
+            if (currentPiece.Type != PieceType.Pawn)
+            {
+                return (true, false);
+            }
+
+            // must be diagonal move
+            if (Math.Abs(toX - fromX) != 1 || Math.Abs(toY - fromY) != 1)
+            {
+                return (true, false);
+            }
+
+            // target square must be empty
+            if (targetPiece != null)
+            {
+                return (true, false);
+            }
+
+            // must match en passant target square
+            if (GameState.EnPassantTarget != (toX, toY))
+            {
+                return (true, false);
+            }
+
+            // determine captured pawn position
+            var capturedPawnX = fromX;
+            var capturedPawnY = toY;
+
+            var capturedPawn = GameState.BoardState.Squares[capturedPawnX, capturedPawnY];
+            if (capturedPawn == null || capturedPawn.Type != PieceType.Pawn)
+            {
+                return (true, false);
+            }
+            var move = new Move((fromX, fromY), (toX, toY))
+            {
+                MovedPiece = currentPiece,
+                CapturedPiece = capturedPawn,
+                IsEnPassant = true
+            };
+            ExecuteMove(move);
+
+            GameState.EnPassantTarget = null;
+
+            return (false, true);
         }
 
         private void HandleEndOfTurn(bool successfulMove, Move move)
@@ -241,7 +327,7 @@ namespace Checkup.Core.Services
             return false;
         }
 
-        private (bool flowControl, bool value) TryHandleCastling(
+        private (bool flowControlCastling, bool valueCastling) TryHandleCastling(
             int fromX,
             int fromY,
             int toX,
@@ -432,9 +518,8 @@ namespace Checkup.Core.Services
                 return new();
             }
 
-            var moves = piece.GetValidMoves(GameState.BoardState, row, col);
-
-            return moves
+            var attacks = piece.GetAttackedSquares(
+                GameState.BoardState, row, col)
                 .Where(move =>
                 {
                     var target = GetPiece(move.x, move.y);
@@ -444,6 +529,19 @@ namespace Checkup.Core.Services
                            !WouldLeaveKingInCheck(row, col, move.x, move.y);
                 })
                 .ToList();
+            if (piece.Type == PieceType.Pawn && GameState.EnPassantTarget != null)
+            {
+                var ep = GameState.EnPassantTarget.Value;
+
+                int direction = piece.IsBlack ? 1 : -1;
+
+                if (ep.x == row + direction && Math.Abs(ep.y - col) == 1)
+                {
+                    attacks.Add(ep);
+                }
+            }
+
+            return attacks;
         }
 
         public bool IsPlayerInCheck()

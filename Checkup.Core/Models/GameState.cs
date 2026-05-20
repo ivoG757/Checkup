@@ -26,6 +26,7 @@ namespace Checkup.Core.Models
         {
             return !Moves.Any(m => m.MovedPiece == piece);
         }
+        public (int x, int y)? EnPassantTarget { get; set; }
         public GameResult Result { get; set; } = GameResult.Ongoing;
 
         public GameEndReason EndReason { get; set; } = GameEndReason.None;
